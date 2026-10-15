@@ -39,32 +39,21 @@
 
     /* HEADER & STATUS */
     header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: flex-end; 
-      margin-bottom: 12px; 
-      padding: 0 4px;
+      display: flex; justify-content: space-between; align-items: flex-end; 
+      margin-bottom: 12px; padding: 0 4px;
     }
     h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; color: #FFFFFF; }
     .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-flex; align-items: center; gap: 6px;
       background: rgba(28, 28, 30, 0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border: 0.5px solid rgba(255,255,255,0.1);
-      padding: 4px 11px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #FFFFFF;
+      padding: 4px 11px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; color: #FFFFFF;
       box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
     .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+      width: 8px; height: 8px; border-radius: 50%;
       background: var(--ios-green);
       box-shadow: 0 0 6px rgba(50, 215, 75, 0.6);
       animation: pulse 2.5s infinite ease-in-out;
@@ -74,150 +63,46 @@
 
     /* FLIKVAL (SEGMENTED CONTROL) */
     .segmented-control {
-      display: flex;
-      background: rgba(118, 118, 128, 0.24);
-      border-radius: 12px;
-      padding: 3px;
-      margin-bottom: 16px;
-      user-select: none;
+      display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 12px; padding: 3px; margin-bottom: 16px; user-select: none;
     }
     .seg-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 9px 12px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--ios-secondary-label);
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
+      flex: 1; border: none; background: transparent; padding: 9px 12px;
+      font-size: 15px; font-weight: 600; color: var(--ios-secondary-label);
+      border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 7px;
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .seg-btn.active {
-      background: #636366;
-      color: #FFFFFF;
+      background: #636366; color: #FFFFFF;
       box-shadow: 0 3px 8px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
     }
-    .seg-badge {
-      background: #FF3B30;
-      color: white;
-      font-size: 11px;
-      padding: 2px 7px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
+    .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
 
     /* KORT & RADER */
-    .section-title { 
-      font-size: 13px; 
-      font-weight: 600; 
-      color: var(--ios-secondary-label); 
-      text-transform: uppercase; 
-      letter-spacing: -0.2px;
-      margin-left: 14px; 
-      margin-bottom: 5px; 
-    }
-    .ios-card { 
-      background: var(--ios-card); 
-      border-radius: 14px; 
-      overflow: hidden; 
-      margin-bottom: 16px; 
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
-    }
-    .ios-row { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      padding: 12px 16px; 
-      border-bottom: 0.5px solid var(--ios-separator); 
-      font-size: 17px; 
-    }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; letter-spacing: -0.2px; margin-left: 14px; margin-bottom: 5px; }
+    .ios-card { background: var(--ios-card); border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 0.5px solid rgba(255, 255, 255, 0.08); }
+    .ios-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--ios-separator); font-size: 17px; }
     .ios-row:last-child { border-bottom: none; }
     .row-label-group { display: flex; align-items: center; gap: 10px; font-weight: 400; color: var(--ios-label); }
     .row-icon { width: 22px; height: 22px; fill: var(--ios-accent); opacity: 0.9; }
 
-    select { 
-      border: none; 
-      background: transparent; 
-      font-family: inherit; 
-      font-size: 17px; 
-      color: var(--ios-accent); 
-      outline: none; 
-      max-width: 62%; 
-      text-align-last: right; 
-      cursor: pointer; 
-      font-weight: 400;
-    }
+    select { border: none; background: transparent; font-family: inherit; font-size: 17px; color: var(--ios-accent); outline: none; max-width: 62%; text-align-last: right; cursor: pointer; font-weight: 400; }
     .value-button { font-size: 17px; color: var(--ios-accent); cursor: pointer; user-select: none; font-weight: 400; }
-    .time-badge { 
-      font-size: 17px; 
-      font-weight: 500; 
-      color: var(--ios-accent); 
-      background: rgba(255, 149, 0, 0.15); 
-      padding: 6px 14px; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      transition: all 0.15s ease; 
-    }
+    .time-badge { font-size: 17px; font-weight: 500; color: var(--ios-accent); background: rgba(255, 149, 0, 0.15); padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; }
     .time-badge.active { background: var(--ios-accent); color: #FFFFFF; }
     .calculated-val { font-weight: 600; color: var(--ios-label); }
-    
     textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; }
     textarea::placeholder { color: var(--ios-secondary-label); }
 
-    /* MODAL OVERLAY */
-    .action-sheet-overlay { 
-      display: none; 
-      position: fixed; 
-      top: 0; left: 0; right: 0; bottom: 0; 
-      background: rgba(0,0,0,0.7); 
-      backdrop-filter: blur(8px); 
-      -webkit-backdrop-filter: blur(8px); 
-      z-index: 100; 
-      opacity: 0; 
-      pointer-events: none;
-      transition: opacity 0.3s ease; 
-    }
-    .action-sheet-overlay.show { 
-      display: block; 
-      opacity: 1; 
-      pointer-events: auto;
-    }
-    
-    /* MODAL RUTA FÖR HJUL */
-    .action-sheet { 
-      position: fixed; 
-      bottom: -100%; 
-      left: 0; 
-      right: 0; 
-      background: var(--ios-card); 
-      border-top-left-radius: 16px; 
-      border-top-right-radius: 16px; 
-      z-index: 101; 
-      transition: bottom 0.35s cubic-bezier(0.1, 0.8, 0.1, 1); 
-      padding-bottom: calc(env(safe-area-inset-bottom) + 24px); 
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.5); 
-      pointer-events: none;
-    }
-    .action-sheet.open { 
-      bottom: 0; 
-      pointer-events: auto;
-    }
-    .action-sheet-header { 
-      display: flex; justify-content: space-between; align-items: center; 
-      padding: 14px 18px; 
-      background: var(--ios-card); 
-      border-bottom: 0.5px solid var(--ios-separator); 
-      border-top-left-radius: 16px; border-top-right-radius: 16px; 
-    }
+    /* MODAL OVERLAY & ACTION SHEETS */
+    .action-sheet-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
+    .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-top-left-radius: 16px; border-top-right-radius: 16px; z-index: 101; transition: bottom 0.35s cubic-bezier(0.1, 0.8, 0.1, 1); padding-bottom: calc(env(safe-area-inset-bottom) + 24px); box-shadow: 0 -4px 24px rgba(0,0,0,0.5); pointer-events: none; }
+    .action-sheet.open { bottom: 0; pointer-events: auto; }
+    .action-sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: var(--ios-card); border-bottom: 0.5px solid var(--ios-separator); border-top-left-radius: 16px; border-top-right-radius: 16px; }
     .action-sheet-title { font-size: 15px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; letter-spacing: -0.2px; }
     .action-sheet-btn { color: var(--ios-accent); font-size: 17px; font-weight: 600; background: none; border: none; cursor: pointer; }
     
-    /* GEMENSAM STIL FÖR ALLA RULLHJUL */
+    /* RULLHJUL */
     .picker-container { position: relative; height: 190px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: var(--ios-card); }
     .picker-highlight { position: absolute; left: 16px; right: 16px; height: var(--ios-picker-item-h); background-color: rgba(118, 118, 128, 0.24); border-radius: 10px; pointer-events: none; z-index: 31; }
     .picker-mask-top, .picker-mask-bottom { position: absolute; left: 0; right: 0; height: 75px; pointer-events: none; z-index: 32; }
@@ -229,97 +114,29 @@
     .picker-item { height: var(--ios-picker-item-h); line-height: var(--ios-picker-item-h); text-align: center; font-size: 23px; font-weight: 600; color: #FFFFFF; scroll-snap-align: center; }
     .picker-separator { font-size: 24px; font-weight: 700; line-height: 190px; z-index: 33; position: relative; padding: 0 4px; color: #FFFFFF; }
 
-    /* APPLE ANTECKNING */
-    .note-sheet {
-      background: var(--ios-card);
-      border-radius: 16px;
-      padding: 24px 20px;
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      min-height: 280px;
-    }
-    .note-updated-header {
-      color: var(--ios-accent);
-      font-style: italic;
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
-    .note-h2 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-      margin-bottom: 14px;
-      color: var(--ios-label);
-    }
-    .note-bullet-list {
-      list-style-type: disc;
-      padding-left: 24px;
-      margin-bottom: 22px;
-    }
-    .note-bullet-list li {
-      font-size: 17px;
-      line-height: 1.6;
-      color: #EBEBF5;
-      margin-bottom: 6px;
-    }
-    .note-summary {
-      font-size: 18px;
-      border-top: 0.5px solid var(--ios-separator);
-      padding-top: 14px;
-      margin-top: 10px;
-      color: #FFF;
-    }
-    .empty-note-state {
-      text-align: center;
-      padding: 40px 10px;
-      color: var(--ios-secondary-label);
-      font-size: 16px;
-    }
+    /* APPLE ANTECKNING (FLIK 2) */
+    .note-sheet { background: var(--ios-card); border-radius: 16px; padding: 24px 20px; border: 0.5px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 14px rgba(0,0,0,0.2); min-height: 280px; }
+    .note-updated-header { color: var(--ios-accent); font-style: italic; font-size: 14px; margin-bottom: 18px; }
+    .note-h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 14px; color: var(--ios-label); }
+    .note-bullet-list { list-style-type: disc; padding-left: 24px; margin-bottom: 22px; }
+    .note-bullet-list li { font-size: 17px; line-height: 1.6; color: #EBEBF5; margin-bottom: 6px; }
+    .note-summary { font-size: 18px; border-top: 0.5px solid var(--ios-separator); padding-top: 14px; margin-top: 10px; color: #FFF; }
+    .empty-note-state { text-align: center; padding: 40px 10px; color: var(--ios-secondary-label); font-size: 16px; }
 
     /* KNAPPAR */
-    .ios-btn { 
-      width: 100%; 
-      background-color: var(--ios-accent); 
-      color: #FFFFFF; 
-      font-size: 17px; 
-      font-weight: 600; 
-      padding: 16px; 
-      border-radius: 14px; 
-      border: none; 
-      cursor: pointer; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      box-shadow: 0 4px 14px rgba(255,149,0,0.3); 
-      transition: transform 0.1s ease, opacity 0.15s ease; 
-      margin-top: 6px; 
-    }
+    .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 14px rgba(255,149,0,0.3); transition: transform 0.1s ease, opacity 0.15s ease; margin-top: 6px; }
     .ios-btn:active { transform: scale(0.98); opacity: 0.9; }
     .ios-btn:disabled { background-color: var(--ios-gray); box-shadow: none; transform: none; }
-    
-    .refresh-btn {
-      width: 100%;
-      background: rgba(118, 118, 128, 0.24);
-      color: var(--ios-accent);
-      font-size: 16px;
-      font-weight: 600;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: background 0.15s ease;
-    }
+    .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 16px; transition: background 0.15s ease; }
     .refresh-btn:active { background: rgba(118, 118, 128, 0.4); }
 
-    /* PIN BOX */
+    /* PIN BOX & STATUS */
     .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(28,28,30,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 16px; z-index: 200; box-shadow: 0 12px 36px rgba(0,0,0,0.5); padding: 22px; text-align: center; color: #FFFFFF; border: 0.5px solid rgba(255,255,255,0.1); }
     .pin-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 14px; }
     .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border: 1px solid var(--ios-separator); border-radius: 10px; margin-bottom: 18px; outline: none; background: #000000; color: #FFFFFF; }
     .pin-buttons { display: flex; border-top: 0.5px solid var(--ios-separator); margin: 0 -22px -22px -22px; }
     .pin-btn { flex: 1; padding: 14px; font-size: 17px; background: none; border: none; color: var(--ios-accent); cursor: pointer; }
     .pin-btn.confirm { font-weight: 600; border-left: 0.5px solid var(--ios-separator); }
-
     #statusBox { display: none; padding: 12px 16px; border-radius: 12px; margin-bottom: 14px; font-size: 15px; font-weight: 500; text-align: center; }
     .status-success { background-color: rgba(50, 215, 75, 0.2); color: #32D74B; border: 1px solid #32D74B; }
     .status-error { background-color: rgba(255, 59, 48, 0.2); color: #FF3B30; border: 1px solid #FF3B30; }
@@ -332,16 +149,13 @@
 
   <div class="app-container">
     <header>
-      <div>
-        <h1>Tidrapport</h1>
-      </div>
+      <div><h1>Tidrapport</h1></div>
       <div class="status-pill">
         <span class="status-dot" id="liveDot"></span>
         <span id="liveText">Ansluten</span>
       </div>
     </header>
 
-    <!-- SEGMENTED CONTROL FLIKAR -->
     <div class="segmented-control">
       <button class="seg-btn active" id="tabReportBtn" onclick="switchView('report')">Rapportera</button>
       <button class="seg-btn" id="tabNotesBtn" onclick="switchView('notes')">
@@ -352,7 +166,7 @@
 
     <div id="statusBox"></div>
 
-    <!-- FLIK 1: RAPPORTERINGSFORMULÄR -->
+    <!-- FLIK 1 -->
     <div id="viewReport">
       <div class="section-title">Användare</div>
       <div class="ios-card">
@@ -372,18 +186,14 @@
             <svg class="row-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
             <span>Aktivitet</span>
           </div>
-          <select id="eventSelect" onchange="handleEventChange()">
-            <option value="">Laddar kalender...</option>
-          </select>
+          <select id="eventSelect" onchange="handleEventChange()"><option value="">Laddar kalender...</option></select>
         </div>
         <div class="ios-row">
           <div class="row-label-group">
             <svg class="row-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
             <span>Datum för pass</span>
           </div>
-          <select id="dateSelect">
-            <option value="">Välj händelse först</option>
-          </select>
+          <select id="dateSelect"><option value="">Välj händelse först</option></select>
         </div>
       </div>
 
@@ -398,128 +208,64 @@
             <option value="Övertid">Övertid</option>
           </select>
         </div>
-
-        <div class="ios-row">
-          <label>Starttid</label>
-          <div class="time-badge" id="startBadge" onclick="openTimePicker('start')">07:00</div>
-        </div>
-
-        <div class="ios-row">
-          <label>Sluttid</label>
-          <div class="time-badge" id="endBadge" onclick="openTimePicker('end')">16:00</div>
-        </div>
-
-        <div class="ios-row">
-          <label>Arbetad tid</label>
-          <span class="calculated-val" id="totalDurationText">9 tim 0 min</span>
-        </div>
+        <div class="ios-row"><label>Starttid</label><div class="time-badge" id="startBadge" onclick="openTimePicker('start')">07:00</div></div>
+        <div class="ios-row"><label>Sluttid</label><div class="time-badge" id="endBadge" onclick="openTimePicker('end')">16:00</div></div>
+        <div class="ios-row"><label>Arbetad tid</label><span class="calculated-val" id="totalDurationText">9 tim 0 min</span></div>
       </div>
 
       <div class="section-title">Övrigt</div>
-      <div class="ios-card">
-        <div style="padding: 12px 16px;">
-          <textarea id="noteInput" placeholder="Lägg till en anteckning (frivilligt)..."></textarea>
-        </div>
-      </div>
+      <div class="ios-card"><div style="padding: 12px 16px;"><textarea id="noteInput" placeholder="Lägg till en anteckning (frivilligt)..."></textarea></div></div>
 
       <button class="ios-btn" id="submitBtn" onclick="initiateSubmit()">
-        <div class="spinner" id="btnSpinner"></div>
-        <span id="btnText">Skicka tidrapport</span>
+        <div class="spinner" id="btnSpinner"></div><span id="btnText">Skicka tidrapport</span>
       </button>
     </div>
 
-    <!-- FLIK 2: APPLE ANTECKNING (PERSONLIG) -->
+    <!-- FLIK 2 -->
     <div id="viewNotes" style="display: none;">
       <div class="section-title">Din sammanställning</div>
-      
       <div class="note-sheet">
-        <div class="note-updated-header" id="noteUpdatedTimestamp">
-          Uppdaterad: Hämtar...
-        </div>
-
+        <div class="note-updated-header" id="noteUpdatedTimestamp">Uppdaterad: Hämtar...</div>
         <h2 class="note-h2">Orapporterade tider:</h2>
-
-        <ul class="note-bullet-list" id="noteBulletList">
-          <li>Laddar sammanställning...</li>
-        </ul>
-
-        <div class="note-summary">
-          <b>Summa:</b> <span id="noteSumText">0 timmar</span>
-        </div>
+        <ul class="note-bullet-list" id="noteBulletList"><li>Laddar sammanställning...</li></ul>
+        <div class="note-summary"><b>Summa:</b> <span id="noteSumText">0 timmar</span></div>
       </div>
-
-      <button class="refresh-btn" onclick="loadData(true)">
-        ↻ Uppdatera lista
-      </button>
+      <button class="refresh-btn" onclick="loadData(true)">↻ Uppdatera lista</button>
     </div>
-
   </div>
 
-  <!-- MODAL OVERLAY -->
   <div class="action-sheet-overlay" id="overlay" onclick="closeAllPickers()"></div>
 
-  <!-- ACTION SHEET FÖR PERSONALVAL -->
+  <!-- ACTION SHEETS -->
   <div class="action-sheet" id="userPickerSheet">
-    <div class="action-sheet-header">
-      <div class="action-sheet-title">Välj person</div>
-      <button class="action-sheet-btn" onclick="confirmUser()">Klar</button>
-    </div>
-    <div class="picker-container full-width">
-      <div class="picker-highlight"></div><div class="picker-mask-top"></div><div class="picker-mask-bottom"></div>
-      <div class="picker-column full-width-col" id="userColumn"></div>
-    </div>
+    <div class="action-sheet-header"><div class="action-sheet-title">Välj person</div><button class="action-sheet-btn" onclick="confirmUser()">Klar</button></div>
+    <div class="picker-container full-width"><div class="picker-highlight"></div><div class="picker-mask-top"></div><div class="picker-mask-bottom"></div><div class="picker-column full-width-col" id="userColumn"></div></div>
   </div>
 
-  <!-- ACTION SHEET FÖR TIDSVÄLJARE -->
   <div class="action-sheet" id="timePickerSheet">
-    <div class="action-sheet-header">
-      <div class="action-sheet-title" id="timePickerTitle">Välj tid</div>
-      <button class="action-sheet-btn" onclick="confirmTimePicker()">Klar</button>
-    </div>
-    <div class="picker-container full-width">
-      <div class="picker-highlight"></div><div class="picker-mask-top"></div><div class="picker-mask-bottom"></div>
-      <div class="picker-column" id="timeHours"></div>
-      <div class="picker-separator">:</div>
-      <div class="picker-column" id="timeMinutes"></div>
-    </div>
+    <div class="action-sheet-header"><div class="action-sheet-title" id="timePickerTitle">Välj tid</div><button class="action-sheet-btn" onclick="confirmTimePicker()">Klar</button></div>
+    <div class="picker-container full-width"><div class="picker-highlight"></div><div class="picker-mask-top"></div><div class="picker-mask-bottom"></div><div class="picker-column" id="timeHours"></div><div class="picker-separator">:</div><div class="picker-column" id="timeMinutes"></div></div>
   </div>
 
   <!-- PIN KOD MODAL -->
   <div class="pin-box" id="pinBox">
     <h3>Ange PIN-kod för <span id="pinNameDisplay"></span></h3>
     <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="4" placeholder="••••">
-    <div class="pin-buttons">
-      <button class="pin-btn" onclick="closePin()">Avbryt</button>
-      <button class="pin-btn confirm" onclick="verifyPin()">Klar</button>
-    </div>
+    <div class="pin-buttons"><button class="pin-btn" onclick="closePin()">Avbryt</button><button class="pin-btn confirm" onclick="verifyPin()">Klar</button></div>
   </div>
 
   <script>
-    // LÄNKEN ÄR UPPDATERAD TILL DEN FUNGERANDE VERSIONEN
     const API_URL = "https://script.google.com/macros/s/AKfycbyva5F7GM_oRWagNvbxmPgppIfcxrjPvsVkEIEeAO9X-SqicdXIZ1dcy4rNfVHAUJT-yQ/exec";
     
-    let staffData = [];
-    let calendarEvents = [];
-    let unreportedData = [];
-    let selectedUserObj = null;
-    let selectedEvent = null;
-    let pendingPayload = null;
-
-    const MINUTE_STEPS = [0, 15, 30, 45];
-    const ITEM_HEIGHT = 40;
-    
-    let timeState = { startH: 7, startM: 0, endH: 16, endM: 0 };
-    let tempTime = { h: 0, m: 0 };
-    let activeTimeType = null;
-    let userIndexState = 0;
+    let staffData = [], calendarEvents = [], unreportedData = [];
+    let selectedUserObj = null, selectedEvent = null, pendingPayload = null;
+    const MINUTE_STEPS = [0, 15, 30, 45], ITEM_HEIGHT = 40;
+    let timeState = { startH: 7, startM: 0, endH: 16, endM: 0 }, tempTime = { h: 0, m: 0 };
+    let activeTimeType = null, userIndexState = 0;
 
     window.onload = () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-      }
-      setupWheels();
-      loadData();
-      
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+      setupWheels(); loadData();
       window.addEventListener('online', updateNetworkStatus);
       window.addEventListener('offline', updateNetworkStatus);
       updateNetworkStatus();
@@ -529,184 +275,99 @@
       const isOnline = navigator.onLine;
       const dot = document.getElementById('liveDot');
       const text = document.getElementById('liveText');
-      if (isOnline) {
-        dot.className = "status-dot";
-        text.textContent = "Ansluten";
-        syncOfflineQueue();
-      } else {
-        dot.className = "status-dot offline";
-        text.textContent = "Offline";
-      }
+      if (isOnline) { dot.className = "status-dot"; text.textContent = "Ansluten"; syncOfflineQueue(); } 
+      else { dot.className = "status-dot offline"; text.textContent = "Offline"; }
     }
 
     function switchView(viewName) {
-      const tabReport = document.getElementById('tabReportBtn');
-      const tabNotes = document.getElementById('tabNotesBtn');
-      const viewReport = document.getElementById('viewReport');
-      const viewNotes = document.getElementById('viewNotes');
-
       if (viewName === 'report') {
-        tabReport.classList.add('active');
-        tabNotes.classList.remove('active');
-        viewReport.style.display = 'block';
-        viewNotes.style.display = 'none';
+        document.getElementById('tabReportBtn').classList.add('active'); document.getElementById('tabNotesBtn').classList.remove('active');
+        document.getElementById('viewReport').style.display = 'block'; document.getElementById('viewNotes').style.display = 'none';
       } else {
-        tabNotes.classList.add('active');
-        tabReport.classList.remove('active');
-        viewReport.style.display = 'none';
-        viewNotes.style.display = 'block';
+        document.getElementById('tabNotesBtn').classList.add('active'); document.getElementById('tabReportBtn').classList.remove('active');
+        document.getElementById('viewReport').style.display = 'none'; document.getElementById('viewNotes').style.display = 'block';
         renderNotesView();
       }
     }
 
     function loadData(isManualRefresh = false) {
       if (isManualRefresh) showStatus("Uppdaterar...", true);
-
       if (navigator.onLine) {
         fetch(API_URL + "?action=getData")
           .then(res => res.json())
           .then(data => {
             localStorage.setItem('tidrapport_data', JSON.stringify(data));
-            localStorage.setItem('tidrapport_last_sync', new Date().toISOString());
             applyData(data);
             if (isManualRefresh) showStatus("Listan är uppdaterad!", true);
-          })
-          .catch(() => useLocalData());
-      } else {
-        useLocalData();
-      }
+          }).catch(() => useLocalData());
+      } else { useLocalData(); }
     }
 
     function useLocalData() {
       let cached = localStorage.getItem('tidrapport_data');
-      if (cached) {
-        applyData(JSON.parse(cached));
-      } else {
-        document.getElementById('userValDisplay').textContent = "Välj...";
-      }
+      if (cached) applyData(JSON.parse(cached));
     }
 
     function applyData(data) {
-      staffData = data.staff || [];
-      calendarEvents = data.events || [];
-      unreportedData = data.unreported || [];
-
-      if (!selectedUserObj) {
-        document.getElementById('userValDisplay').textContent = "Välj...";
-      }
-
-      buildUserWheel(staffData);
-      populateEvents(calendarEvents);
-      updateBadge();
-      renderNotesView();
+      staffData = data.staff || []; calendarEvents = data.events || []; unreportedData = data.unreported || [];
+      if (!selectedUserObj) document.getElementById('userValDisplay').textContent = "Välj...";
+      buildUserWheel(staffData); populateEvents(calendarEvents); updateBadge(); renderNotesView();
     }
 
     function updateBadge() {
       const badge = document.getElementById('unreportedBadge');
-      if (!selectedUserObj) {
-        badge.style.display = 'none';
-        return;
-      }
-      
+      if (!selectedUserObj) { badge.style.display = 'none'; return; }
       let myUnreported = unreportedData.filter(item => item.anvandare === selectedUserObj.name);
-      
-      if (myUnreported.length > 0) {
-        badge.textContent = myUnreported.length;
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
-      }
+      if (myUnreported.length > 0) { badge.textContent = myUnreported.length; badge.style.display = 'inline-block'; } 
+      else { badge.style.display = 'none'; }
     }
 
     function renderNotesView() {
-      const listEl = document.getElementById('noteBulletList');
-      const sumEl = document.getElementById('noteSumText');
-      const timeEl = document.getElementById('noteUpdatedTimestamp');
-
+      const listEl = document.getElementById('noteBulletList'), sumEl = document.getElementById('noteSumText'), timeEl = document.getElementById('noteUpdatedTimestamp');
       const now = new Date();
-      const sweDays = ['sön', 'mån', 'tis', 'ons', 'tors', 'fre', 'lör'];
-      const sweMonths = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
-      const hoursStr = String(now.getHours()).padStart(2, '0');
-      const minsStr = String(now.getMinutes()).padStart(2, '0');
-      
-      timeEl.textContent = `Uppdaterad: ${sweDays[now.getDay()]} ${now.getDate()} ${sweMonths[now.getMonth()]} kl. ${hoursStr}:${minsStr}`;
+      const sweDays = ['sön', 'mån', 'tis', 'ons', 'tors', 'fre', 'lör'], sweMonths = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+      timeEl.textContent = `Uppdaterad: ${sweDays[now.getDay()]} ${now.getDate()} ${sweMonths[now.getMonth()]} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      if (!selectedUserObj) {
-        listEl.innerHTML = `<div class="empty-note-state">Välj ditt namn under fliken 'Rapportera' för att se dina orapporterade tider.</div>`;
-        sumEl.textContent = "0 timmar";
-        return;
-      }
-
+      if (!selectedUserObj) { listEl.innerHTML = `<div class="empty-note-state">Välj ditt namn under fliken 'Rapportera' för att se dina orapporterade tider.</div>`; sumEl.textContent = "0 timmar"; return; }
       let myUnreported = unreportedData.filter(item => item.anvandare === selectedUserObj.name);
+      if (myUnreported.length === 0) { listEl.innerHTML = `<div class="empty-note-state">Inga orapporterade tider för dig (${selectedUserObj.name}). Grymt jobbat!</div>`; sumEl.textContent = "0 timmar"; return; }
 
-      if (myUnreported.length === 0) {
-        listEl.innerHTML = `<div class="empty-note-state">Inga orapporterade tider för dig (${selectedUserObj.name}). Grymt jobbat!</div>`;
-        sumEl.textContent = "0 timmar";
-        return;
-      }
-
-      let totalMinutesAll = 0;
-      let groupedByDate = {};
-
+      let totalMinutesAll = 0, groupedByDate = {};
       myUnreported.forEach(item => {
-        let d = new Date(item.datum);
-        let dateLabel = item.datum;
-        if (!isNaN(d.getTime())) {
-          dateLabel = `${sweDays[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`;
-        }
-
+        let d = new Date(item.datum), dateLabel = item.datum;
+        if (!isNaN(d.getTime())) dateLabel = `${sweDays[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`;
         let mins = parseDurationToMinutes(item.totaltid);
         totalMinutesAll += mins;
-
-        if (!groupedByDate[dateLabel]) {
-          groupedByDate[dateLabel] = 0;
-        }
+        if (!groupedByDate[dateLabel]) groupedByDate[dateLabel] = 0;
         groupedByDate[dateLabel] += mins;
       });
 
       let html = "";
       for (const [dateLabel, totalMinsForDay] of Object.entries(groupedByDate)) {
         let hoursDec = (totalMinsForDay / 60);
-        let hoursFormatted = Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',');
-        html += `<li>${dateLabel}, ${hoursFormatted} timmar</li>`;
+        html += `<li>${dateLabel}, ${Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',')} timmar</li>`;
       }
-
       listEl.innerHTML = html;
-
       let totalHoursDec = (totalMinutesAll / 60);
-      let totalFormatted = Number.isInteger(totalHoursDec) ? totalHoursDec : totalHoursDec.toFixed(1).replace('.', ',');
-      sumEl.textContent = `${totalFormatted} timmar`;
+      sumEl.textContent = `${Number.isInteger(totalHoursDec) ? totalHoursDec : totalHoursDec.toFixed(1).replace('.', ',')} timmar`;
     }
 
     function parseDurationToMinutes(str) {
-      if (!str) return 0;
-      let s = String(str).toLowerCase();
-      let h = 0, m = 0;
-      let hMatch = s.match(/(\d+)\s*(tim|h)/);
-      if (hMatch) h = parseInt(hMatch[1], 10);
-      let mMatch = s.match(/(\d+)\s*(min|m)/);
-      if (mMatch) m = parseInt(mMatch[1], 10);
-      if (!hMatch && !mMatch) {
-        let n = parseFloat(s.replace(',', '.'));
-        if (!isNaN(n)) return Math.round(n * 60);
-      }
+      if (!str) return 0; let s = String(str).toLowerCase(), h = 0, m = 0;
+      let hMatch = s.match(/(\d+)\s*(tim|h)/); if (hMatch) h = parseInt(hMatch[1], 10);
+      let mMatch = s.match(/(\d+)\s*(min|m)/); if (mMatch) m = parseInt(mMatch[1], 10);
+      if (!hMatch && !mMatch) { let n = parseFloat(s.replace(',', '.')); if (!isNaN(n)) return Math.round(n * 60); }
       return (h * 60) + m;
     }
 
-    function closeAllPickers() {
-      closeUserPicker();
-      closeTimePicker();
-      if(document.getElementById('pinBox').style.display === 'block') closePin();
-    }
+    function closeAllPickers() { closeUserPicker(); closeTimePicker(); if(document.getElementById('pinBox').style.display === 'block') closePin(); }
+    function padZero(num) { return String(num).padStart(2, '0'); }
 
     function setupWheels() {
-      let hours = Array.from({length: 24}, (_, i) => i);
-      buildTimeWheel('timeHours', hours, false); 
+      buildTimeWheel('timeHours', Array.from({length: 24}, (_, i) => i), false); 
       buildTimeWheel('timeMinutes', MINUTE_STEPS, true);
       calculateDuration();
     }
-
-    function padZero(num) { return String(num).padStart(2, '0'); }
 
     function buildTimeWheel(id, values, isMin) {
       let col = document.getElementById(id);
@@ -714,14 +375,7 @@
       let timer;
       col.addEventListener('scroll', () => {
         clearTimeout(timer);
-        timer = setTimeout(() => {
-          let idx = Math.max(0, Math.round(col.scrollTop / ITEM_HEIGHT));
-          if (!isMin) {
-            tempTime.h = Math.min(23, idx);
-          } else {
-            tempTime.m = MINUTE_STEPS[Math.min(3, idx)];
-          }
-        }, 60);
+        timer = setTimeout(() => { let idx = Math.max(0, Math.round(col.scrollTop / ITEM_HEIGHT)); if (!isMin) tempTime.h = Math.min(23, idx); else tempTime.m = MINUTE_STEPS[Math.min(3, idx)]; }, 60);
       });
     }
 
@@ -729,34 +383,17 @@
       activeTimeType = type;
       tempTime.h = type === 'start' ? timeState.startH : timeState.endH;
       tempTime.m = type === 'start' ? timeState.startM : timeState.endM;
-
       document.getElementById('timePickerTitle').textContent = type === 'start' ? "Välj Starttid" : "Välj Sluttid";
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('timePickerSheet').classList.add('open');
-
-      setTimeout(() => {
-        scrollWheelTo('timeHours', tempTime.h, false);
-        scrollWheelTo('timeMinutes', tempTime.m, true);
-      }, 10);
+      document.getElementById('overlay').classList.add('show'); document.getElementById('timePickerSheet').classList.add('open');
+      setTimeout(() => { scrollWheelTo('timeHours', tempTime.h, false); scrollWheelTo('timeMinutes', tempTime.m, true); }, 10);
     }
 
-    function closeTimePicker() {
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('timePickerSheet').classList.remove('open');
-      activeTimeType = null;
-    }
-
+    function closeTimePicker() { document.getElementById('overlay').classList.remove('show'); document.getElementById('timePickerSheet').classList.remove('open'); activeTimeType = null; }
+    
     function confirmTimePicker() {
-      if (activeTimeType === 'start') {
-        timeState.startH = tempTime.h;
-        timeState.startM = tempTime.m;
-      } else if (activeTimeType === 'end') {
-        timeState.endH = tempTime.h;
-        timeState.endM = tempTime.m;
-      }
-      updateTimeBadges();
-      calculateDuration();
-      closeTimePicker();
+      if (activeTimeType === 'start') { timeState.startH = tempTime.h; timeState.startM = tempTime.m; } 
+      else if (activeTimeType === 'end') { timeState.endH = tempTime.h; timeState.endM = tempTime.m; }
+      updateTimeBadges(); calculateDuration(); closeTimePicker();
     }
 
     function scrollWheelTo(id, val, isMin) {
@@ -764,80 +401,46 @@
       setTimeout(() => document.getElementById(id).scrollTo({ top: Math.max(0, idx) * ITEM_HEIGHT, behavior: 'auto' }), 10);
     }
 
-    function updateTimeBadges() {
-      document.getElementById('startBadge').textContent = `${padZero(timeState.startH)}:${padZero(timeState.startM)}`;
-      document.getElementById('endBadge').textContent = `${padZero(timeState.endH)}:${padZero(timeState.endM)}`;
-    }
-
+    function updateTimeBadges() { document.getElementById('startBadge').textContent = `${padZero(timeState.startH)}:${padZero(timeState.startM)}`; document.getElementById('endBadge').textContent = `${padZero(timeState.endH)}:${padZero(timeState.endM)}`; }
     function calculateDuration() {
       let s = timeState.startH * 60 + timeState.startM, e = timeState.endH * 60 + timeState.endM;
       let diff = e - s; if (diff < 0) diff += 24 * 60;
       let h = Math.floor(diff / 60), m = diff % 60;
-      document.getElementById('totalDurationText').textContent = `${h} tim ${m} min`;
-      return `${h} tim ${m} min`;
+      document.getElementById('totalDurationText').textContent = `${h} tim ${m} min`; return `${h} tim ${m} min`;
     }
 
     function buildUserWheel(list) {
       let col = document.getElementById('userColumn');
-      if (list.length === 0) {
-        col.innerHTML = `<div class="picker-item">Ingen personal</div>`;
-        return;
-      }
+      if (list.length === 0) { col.innerHTML = `<div class="picker-item">Ingen personal</div>`; return; }
       col.innerHTML = list.map(u => `<div class="picker-item">${u.name}</div>`).join('');
       let timer;
-      col.addEventListener('scroll', () => {
-        clearTimeout(timer);
-        timer = setTimeout(() => { userIndexState = Math.min(list.length - 1, Math.max(0, Math.round(col.scrollTop / ITEM_HEIGHT))); }, 60);
-      });
+      col.addEventListener('scroll', () => { clearTimeout(timer); timer = setTimeout(() => { userIndexState = Math.min(list.length - 1, Math.max(0, Math.round(col.scrollTop / ITEM_HEIGHT))); }, 60); });
     }
 
     function openUserPicker() {
-      if (!staffData.length) {
-        showStatus("Hämtar personal från Google, vänta ett ögonblick...", false);
-        return;
-      }
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('userPickerSheet').classList.add('open');
+      if (!staffData.length) return showStatus("Hämtar personal, vänta...", false);
+      document.getElementById('overlay').classList.add('show'); document.getElementById('userPickerSheet').classList.add('open');
       setTimeout(() => document.getElementById('userColumn').scrollTo({ top: userIndexState * ITEM_HEIGHT, behavior: 'auto' }), 10);
     }
 
-    function closeUserPicker() {
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('userPickerSheet').classList.remove('open');
-    }
-
-    function confirmUser() {
-      selectedUserObj = staffData[userIndexState];
-      document.getElementById('userValDisplay').textContent = selectedUserObj.name;
-      closeUserPicker();
-      updateBadge();
-      renderNotesView();
-    }
+    function closeUserPicker() { document.getElementById('overlay').classList.remove('show'); document.getElementById('userPickerSheet').classList.remove('open'); }
+    function confirmUser() { selectedUserObj = staffData[userIndexState]; document.getElementById('userValDisplay').textContent = selectedUserObj.name; closeUserPicker(); updateBadge(); renderNotesView(); }
 
     function populateEvents(events) {
-      let sel = document.getElementById('eventSelect');
-      sel.innerHTML = '<option value="">-- Välj aktivitet --</option>';
-      events.forEach((ev, i) => {
-        let date = new Date(ev.start).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' });
-        sel.innerHTML += `<option value="${i}">${date}: ${ev.title}</option>`;
-      });
+      let sel = document.getElementById('eventSelect'); sel.innerHTML = '<option value="">-- Välj aktivitet --</option>';
+      events.forEach((ev, i) => { let date = new Date(ev.start).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' }); sel.innerHTML += `<option value="${i}">${date}: ${ev.title}</option>`; });
     }
 
     function handleEventChange() {
-      let idx = document.getElementById('eventSelect').value;
-      let dSel = document.getElementById('dateSelect');
-      dSel.innerHTML = '';
+      let idx = document.getElementById('eventSelect').value, dSel = document.getElementById('dateSelect'); dSel.innerHTML = '';
       if (!idx) { dSel.innerHTML = '<option value="">Välj händelse först</option>'; selectedEvent = null; return; }
       selectedEvent = calendarEvents[idx];
-      
-      let curr = new Date(selectedEvent.start), end = new Date(selectedEvent.end);
-      let count = 0;
+      let curr = new Date(selectedEvent.start), end = new Date(selectedEvent.end), count = 0;
       while (curr < end || count === 0) {
         let iso = curr.getFullYear() + "-" + padZero(curr.getMonth()+1) + "-" + padZero(curr.getDate());
         let read = curr.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short' });
         dSel.innerHTML += `<option value="${iso}">${read}</option>`;
-        curr.setDate(curr.getDate() + 1);
-        if (++count > 31) break;
+        curr.setDate(curr.getDate() + 1); if (++count > 31) break;
       }
     }
 
@@ -858,103 +461,76 @@
 
       document.getElementById('pinNameDisplay').textContent = selectedUserObj.name;
       document.getElementById('pinInput').value = '';
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('pinBox').style.display = 'block';
+      document.getElementById('overlay').classList.add('show'); document.getElementById('pinBox').style.display = 'block';
       setTimeout(() => document.getElementById('pinInput').focus(), 100);
     }
 
-    function closePin() {
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('pinBox').style.display = 'none';
-      pendingPayload = null;
-    }
+    function closePin() { document.getElementById('overlay').classList.remove('show'); document.getElementById('pinBox').style.display = 'none'; pendingPayload = null; }
 
     function verifyPin() {
-      let entered = document.getElementById('pinInput').value;
-      let correct = selectedUserObj.pin || "0000";
-      
+      let entered = document.getElementById('pinInput').value, correct = selectedUserObj.pin || "0000";
       if (entered === correct) {
         closePin();
-        if (navigator.onLine) {
-          sendToGoogle(pendingPayload);
-        } else {
-          saveToOfflineQueue(pendingPayload);
-        }
-      } else {
-        alert("Fel PIN-kod. Försök igen.");
-        document.getElementById('pinInput').value = '';
-      }
+        if (navigator.onLine) sendToGoogle(pendingPayload); else saveToOfflineQueue(pendingPayload);
+      } else { alert("Fel PIN-kod. Försök igen."); document.getElementById('pinInput').value = ''; }
     }
 
+    // NY FUNKTION MED POST
     function sendToGoogle(payload) {
       setLoading(true);
-      let qs = new URLSearchParams(payload).toString();
+      let formData = new URLSearchParams();
+      for (let key in payload) { formData.append(key, payload[key]); }
       
-      fetch(API_URL + "?" + qs)
-        .then(res => res.json())
-        .then(res => {
-          setLoading(false);
-          if (res.success) {
-            showStatus("Rapporten har sparats!", true);
-            resetForm();
-            loadData();
-          } else {
-            showStatus("Kunde inte spara: " + res.error, false);
-          }
-        })
-        .catch(() => {
-          setLoading(false);
-          saveToOfflineQueue(payload);
-        });
+      fetch(API_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      })
+      .then(() => {
+        setLoading(false);
+        showStatus("Rapporten har sparats!", true);
+        resetForm();
+        setTimeout(loadData, 1000);
+      })
+      .catch((err) => {
+        setLoading(false);
+        saveToOfflineQueue(payload);
+      });
+    }
+
+    // NY FUNKTION MED POST FÖR OFFLINEKÖ
+    function syncOfflineQueue() {
+      let queue = JSON.parse(localStorage.getItem('tidrapport_queue') || '[]');
+      if (queue.length === 0 || !navigator.onLine) return;
+      let payload = queue[0];
+      let formData = new URLSearchParams();
+      for (let key in payload) { formData.append(key, payload[key]); }
+
+      fetch(API_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      })
+      .then(() => {
+        queue.shift();
+        localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
+        if (queue.length > 0) setTimeout(syncOfflineQueue, 1000);
+        else { showStatus("Synkroniserad!", true); setTimeout(loadData, 1000); }
+      });
     }
 
     function saveToOfflineQueue(payload) {
       let queue = JSON.parse(localStorage.getItem('tidrapport_queue') || '[]');
-      queue.push(payload);
-      localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
+      queue.push(payload); localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
       showStatus("Offline: Sparad i telefonen! Skickas vid uppkoppling.", true);
-      document.getElementById('statusBox').className = "status-offline";
-      resetForm();
+      document.getElementById('statusBox').className = "status-offline"; resetForm();
     }
 
-    function syncOfflineQueue() {
-      let queue = JSON.parse(localStorage.getItem('tidrapport_queue') || '[]');
-      if (queue.length === 0 || !navigator.onLine) return;
-
-      let payload = queue[0];
-      let qs = new URLSearchParams(payload).toString();
-
-      fetch(API_URL + "?" + qs)
-        .then(res => res.json())
-        .then(res => {
-          if (res.success) {
-            queue.shift();
-            localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
-            if (queue.length > 0) setTimeout(syncOfflineQueue, 1000);
-            else { showStatus("Synkroniserad!", true); loadData(); }
-          }
-        });
-    }
-
-    function resetForm() {
-      document.getElementById('eventSelect').value = "";
-      document.getElementById('dateSelect').innerHTML = '<option value="">Välj händelse först</option>';
-      document.getElementById('noteInput').value = "";
-      selectedEvent = null;
-    }
-
-    function setLoading(isLoading) {
-      document.getElementById('submitBtn').disabled = isLoading;
-      document.getElementById('btnSpinner').style.display = isLoading ? 'inline-block' : 'none';
-      document.getElementById('btnText').textContent = isLoading ? 'Skickar...' : 'Skicka tidrapport';
-    }
-
+    function resetForm() { document.getElementById('eventSelect').value = ""; document.getElementById('dateSelect').innerHTML = '<option value="">Välj händelse först</option>'; document.getElementById('noteInput').value = ""; selectedEvent = null; }
+    function setLoading(isLoading) { document.getElementById('submitBtn').disabled = isLoading; document.getElementById('btnSpinner').style.display = isLoading ? 'inline-block' : 'none'; document.getElementById('btnText').textContent = isLoading ? 'Skickar...' : 'Skicka tidrapport'; }
     function showStatus(msg, isSuccess) {
-      let box = document.getElementById('statusBox');
-      if(!msg) { box.style.display = 'none'; return; }
-      box.textContent = msg;
-      box.className = isSuccess ? 'status-success' : 'status-error';
-      box.style.display = 'block';
+      let box = document.getElementById('statusBox'); if(!msg) { box.style.display = 'none'; return; }
+      box.textContent = msg; box.className = isSuccess ? 'status-success' : 'status-error'; box.style.display = 'block';
       if(isSuccess) setTimeout(() => { if(box.textContent === msg) box.style.display = 'none'; }, 4000);
     }
   </script>
