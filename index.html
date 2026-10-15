@@ -5,25 +5,25 @@
   <title>Tidrapport</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#D1D1D6">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
 
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
 
   <style>
     :root {
-      /* Ännu mörkare, djupare systemgrå för hög kontrast */
-      --ios-bg: #D1D1D6; 
-      --ios-card: #FFFFFF;
-      --ios-blue: #007AFF;
+      /* EXAKT MÖRKT LÄGE (DARK MODE) ENLIGT BILDEN */
+      --ios-bg: #000000; /* Helt svart bakgrund */
+      --ios-card: #1C1C1E; /* Mörkgråa kort */
+      --ios-accent: #FF9500; /* iOS Orange (från alarm-appen) */
       --ios-gray: #8E8E93;
-      --ios-separator: rgba(60, 60, 67, 0.18);
-      --ios-label: #1C1C1E;
-      --ios-secondary-label: #6C6C70;
+      --ios-separator: rgba(84, 84, 88, 0.65); /* Tydligare grå linjer för mörk bakgrund */
+      --ios-label: #FFFFFF; /* Vit text */
+      --ios-secondary-label: #EBEBF599; /* Ljusgrå text */
       --ios-picker-item-h: 40px;
       --ios-yellow: #FF9500;
-      --ios-green: #34C759;
+      --ios-green: #32D74B; /* Dark mode grön */
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
     body { 
@@ -46,28 +46,28 @@
       margin-bottom: 12px; 
       padding: 0 4px;
     }
-    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; }
+    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; color: #FFFFFF; }
     .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(28, 28, 30, 0.75);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 0.5px solid var(--ios-separator);
+      border: 0.5px solid rgba(255,255,255,0.1);
       padding: 4px 11px;
       border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--ios-secondary-label);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      color: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--ios-green);
-      box-shadow: 0 0 6px rgba(52, 199, 89, 0.6);
+      box-shadow: 0 0 6px rgba(50, 215, 75, 0.6);
       animation: pulse 2.5s infinite ease-in-out;
     }
     .status-dot.offline { background: var(--ios-yellow); box-shadow: 0 0 6px rgba(255, 149, 0, 0.6); }
@@ -76,12 +76,11 @@
     /* FLIKVAL (SEGMENTED CONTROL) */
     .segmented-control {
       display: flex;
-      background: rgba(118, 118, 128, 0.24);
+      background: rgba(118, 118, 128, 0.24); /* Mörk standard för iOS */
       border-radius: 12px;
       padding: 3px;
       margin-bottom: 16px;
       user-select: none;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
     }
     .seg-btn {
       flex: 1;
@@ -100,9 +99,9 @@
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .seg-btn.active {
-      background: #FFFFFF;
-      color: var(--ios-label);
-      box-shadow: 0 3px 8px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.06);
+      background: #636366; /* Aktiv flik i iOS mörkt läge */
+      color: #FFFFFF;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
     }
     .seg-badge {
       background: #FF3B30;
@@ -111,7 +110,6 @@
       padding: 2px 7px;
       border-radius: 10px;
       font-weight: 700;
-      box-shadow: 0 2px 4px rgba(255, 59, 48, 0.35);
     }
 
     /* KORT & RADER */
@@ -129,8 +127,7 @@
       border-radius: 14px; 
       overflow: hidden; 
       margin-bottom: 16px; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06), 0 0.5px 1px rgba(0,0,0,0.05);
-      border: 0.5px solid var(--ios-separator);
+      border: 0.5px solid rgba(255, 255, 255, 0.08); /* Ljus kant runt svarta kort */
     }
     .ios-row { 
       display: flex; 
@@ -142,40 +139,44 @@
     }
     .ios-row:last-child { border-bottom: none; }
     .row-label-group { display: flex; align-items: center; gap: 10px; font-weight: 400; color: var(--ios-label); }
-    .row-icon { width: 22px; height: 22px; fill: var(--ios-blue); opacity: 0.9; }
+    .row-icon { width: 22px; height: 22px; fill: var(--ios-accent); opacity: 0.9; }
 
     select { 
       border: none; 
       background: transparent; 
       font-family: inherit; 
       font-size: 17px; 
-      color: var(--ios-blue); 
+      color: var(--ios-accent); 
       outline: none; 
       max-width: 62%; 
       text-align-last: right; 
       cursor: pointer; 
       font-weight: 400;
     }
-    .value-button { font-size: 17px; color: var(--ios-blue); cursor: pointer; user-select: none; font-weight: 400; }
+    .value-button { font-size: 17px; color: var(--ios-accent); cursor: pointer; user-select: none; font-weight: 400; }
     .time-badge { 
       font-size: 17px; 
       font-weight: 500; 
-      color: var(--ios-blue); 
-      background: rgba(0, 122, 255, 0.1); 
+      color: var(--ios-accent); 
+      background: rgba(255, 149, 0, 0.15); /* Orange transparent */
       padding: 6px 14px; 
       border-radius: 8px; 
       cursor: pointer; 
       transition: all 0.15s ease; 
     }
+    .time-badge.active { background: var(--ios-accent); color: #FFFFFF; }
     .calculated-val { font-weight: 600; color: var(--ios-label); }
+    
+    textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; }
+    textarea::placeholder { color: var(--ios-secondary-label); }
 
     /* MODAL OVERLAY - KRAFTIGT SUDDIG BAKGRUND */
     .action-sheet-overlay { 
       display: none; 
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-      background: rgba(0,0,0,0.6); /* Mörkare grått fält runtom */
+      background: rgba(0,0,0,0.7); 
       backdrop-filter: blur(8px); 
-      -webkit-backdrop-filter: blur(8px); /* Safari-stöd för blur */
+      -webkit-backdrop-filter: blur(8px); 
       z-index: 100; 
       opacity: 0; 
       transition: opacity 0.3s ease; 
@@ -194,42 +195,42 @@
       z-index: 101; 
       transition: bottom 0.35s cubic-bezier(0.1, 0.8, 0.1, 1); 
       padding-bottom: calc(env(safe-area-inset-bottom) + 24px); 
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.25); 
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.5); 
     }
     .action-sheet.open { bottom: 0; }
     .action-sheet-header { 
       display: flex; justify-content: space-between; align-items: center; 
       padding: 14px 18px; 
-      background: #F8F8FA; 
+      background: var(--ios-card); 
       border-bottom: 0.5px solid var(--ios-separator); 
       border-top-left-radius: 16px; border-top-right-radius: 16px; 
     }
     .action-sheet-title { font-size: 15px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; letter-spacing: -0.2px; }
-    .action-sheet-btn { color: var(--ios-blue); font-size: 17px; font-weight: 600; background: none; border: none; cursor: pointer; }
+    .action-sheet-btn { color: var(--ios-accent); font-size: 17px; font-weight: 600; background: none; border: none; cursor: pointer; }
     
-    /* GEMENSAM STIL FÖR ALLA RULLHJUL */
+    /* GEMENSAM STIL FÖR ALLA RULLHJUL I MÖRKT LÄGE */
     .picker-container { position: relative; height: 190px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: var(--ios-card); }
-    .picker-highlight { position: absolute; left: 16px; right: 16px; height: var(--ios-picker-item-h); background-color: rgba(118, 118, 128, 0.15); border-radius: 10px; pointer-events: none; z-index: 31; }
+    .picker-highlight { position: absolute; left: 16px; right: 16px; height: var(--ios-picker-item-h); background-color: rgba(118, 118, 128, 0.24); border-radius: 10px; pointer-events: none; z-index: 31; }
     .picker-mask-top, .picker-mask-bottom { position: absolute; left: 0; right: 0; height: 75px; pointer-events: none; z-index: 32; }
-    .picker-mask-top { top: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.95) 15%, rgba(255,255,255,0) 100%); }
-    .picker-mask-bottom { bottom: 0; background: linear-gradient(to top, rgba(255,255,255,0.95) 15%, rgba(255,255,255,0) 100%); }
+    .picker-mask-top { top: 0; background: linear-gradient(to bottom, rgba(28,28,30,0.95) 15%, rgba(28,28,30,0) 100%); }
+    .picker-mask-bottom { bottom: 0; background: linear-gradient(to top, rgba(28,28,30,0.95) 15%, rgba(28,28,30,0) 100%); }
     .picker-column { width: 95px; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-top: 75px; padding-bottom: 75px; z-index: 33; position: relative; }
     .picker-column.full-width-col { width: 100%; }
     .picker-column::-webkit-scrollbar { display: none; }
-    .picker-item { height: var(--ios-picker-item-h); line-height: var(--ios-picker-item-h); text-align: center; font-size: 23px; font-weight: 600; color: #000000; scroll-snap-align: center; }
-    .picker-separator { font-size: 24px; font-weight: 700; line-height: 190px; z-index: 33; position: relative; padding: 0 4px; color: #000000; }
+    .picker-item { height: var(--ios-picker-item-h); line-height: var(--ios-picker-item-h); text-align: center; font-size: 23px; font-weight: 600; color: #FFFFFF; scroll-snap-align: center; }
+    .picker-separator { font-size: 24px; font-weight: 700; line-height: 190px; z-index: 33; position: relative; padding: 0 4px; color: #FFFFFF; }
 
     /* APPLE ANTECKNING */
     .note-sheet {
-      background: #FFFFFF;
+      background: var(--ios-card);
       border-radius: 16px;
       padding: 24px 20px;
-      border: 0.5px solid var(--ios-separator);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      border: 0.5px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
       min-height: 280px;
     }
     .note-updated-header {
-      color: #007AFF;
+      color: var(--ios-accent);
       font-style: italic;
       font-size: 14px;
       margin-bottom: 18px;
@@ -249,7 +250,7 @@
     .note-bullet-list li {
       font-size: 17px;
       line-height: 1.6;
-      color: #2C2C2E;
+      color: #EBEBF5; /* Ljusgrå/vit text */
       margin-bottom: 6px;
     }
     .note-summary {
@@ -257,6 +258,7 @@
       border-top: 0.5px solid var(--ios-separator);
       padding-top: 14px;
       margin-top: 10px;
+      color: #FFF;
     }
     .empty-note-state {
       text-align: center;
@@ -268,7 +270,7 @@
     /* KNAPPAR */
     .ios-btn { 
       width: 100%; 
-      background-color: var(--ios-blue); 
+      background-color: var(--ios-accent); 
       color: #FFFFFF; 
       font-size: 17px; 
       font-weight: 600; 
@@ -279,7 +281,7 @@
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      box-shadow: 0 4px 14px rgba(0,122,255,0.3); 
+      box-shadow: 0 4px 14px rgba(255,149,0,0.3); 
       transition: transform 0.1s ease, opacity 0.15s ease; 
       margin-top: 6px; 
     }
@@ -288,8 +290,8 @@
     
     .refresh-btn {
       width: 100%;
-      background: rgba(118, 118, 128, 0.14);
-      color: var(--ios-blue);
+      background: rgba(118, 118, 128, 0.24);
+      color: var(--ios-accent);
       font-size: 16px;
       font-weight: 600;
       padding: 14px;
@@ -299,20 +301,20 @@
       margin-top: 16px;
       transition: background 0.15s ease;
     }
-    .refresh-btn:active { background: rgba(118, 118, 128, 0.22); }
+    .refresh-btn:active { background: rgba(118, 118, 128, 0.4); }
 
     /* PIN BOX (LÄGGS OVANPÅ SUDDIG BAKGRUND) */
-    .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(255,255,255,0.96); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 16px; z-index: 200; box-shadow: 0 12px 36px rgba(0,0,0,0.35); padding: 22px; text-align: center; }
+    .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(28,28,30,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 16px; z-index: 200; box-shadow: 0 12px 36px rgba(0,0,0,0.5); padding: 22px; text-align: center; color: #FFFFFF; border: 0.5px solid rgba(255,255,255,0.1); }
     .pin-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 14px; }
-    .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border: 1px solid var(--ios-separator); border-radius: 10px; margin-bottom: 18px; outline: none; background: #fff; }
+    .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border: 1px solid var(--ios-separator); border-radius: 10px; margin-bottom: 18px; outline: none; background: #000000; color: #FFFFFF; }
     .pin-buttons { display: flex; border-top: 0.5px solid var(--ios-separator); margin: 0 -22px -22px -22px; }
-    .pin-btn { flex: 1; padding: 14px; font-size: 17px; background: none; border: none; color: var(--ios-blue); cursor: pointer; }
+    .pin-btn { flex: 1; padding: 14px; font-size: 17px; background: none; border: none; color: var(--ios-accent); cursor: pointer; }
     .pin-btn.confirm { font-weight: 600; border-left: 0.5px solid var(--ios-separator); }
 
     #statusBox { display: none; padding: 12px 16px; border-radius: 12px; margin-bottom: 14px; font-size: 15px; font-weight: 500; text-align: center; }
-    .status-success { background-color: #E8F5E9; color: #2E7D32; }
-    .status-error { background-color: #FFEBEE; color: #C62828; }
-    .status-offline { background-color: #FFF3E0; color: #E65100; }
+    .status-success { background-color: rgba(50, 215, 75, 0.2); color: #32D74B; border: 1px solid #32D74B; }
+    .status-error { background-color: rgba(255, 59, 48, 0.2); color: #FF3B30; border: 1px solid #FF3B30; }
+    .status-offline { background-color: rgba(255, 149, 0, 0.2); color: #FF9500; border: 1px solid #FF9500; }
     .spinner { width: 18px; height: 18px; border: 2px solid #FFFFFF; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; display: none; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -408,7 +410,7 @@
       <div class="section-title">Övrigt</div>
       <div class="ios-card">
         <div style="padding: 12px 16px;">
-          <textarea id="noteInput" placeholder="Lägg till en anteckning (frivilligt)..." style="width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px;"></textarea>
+          <textarea id="noteInput" placeholder="Lägg till en anteckning (frivilligt)..."></textarea>
         </div>
       </div>
 
@@ -842,116 +844,4 @@
 
       pendingPayload = {
         action: 'saveReport',
-        anvandare: selectedUserObj.name,
-        datum: document.getElementById('dateSelect').value,
-        aktivitet: selectedEvent.title + " (" + document.getElementById('passSelect').value + ")",
-        starttid: `${padZero(timeState.startH)}:${padZero(timeState.startM)}`,
-        sluttid: `${padZero(timeState.endH)}:${padZero(timeState.endM)}`,
-        totaltid: calculateDuration(),
-        anteckning: document.getElementById('noteInput').value
-      };
-
-      document.getElementById('pinNameDisplay').textContent = selectedUserObj.name;
-      document.getElementById('pinInput').value = '';
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('pinBox').style.display = 'block';
-      setTimeout(() => document.getElementById('pinInput').focus(), 100);
-    }
-
-    function closePin() {
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('pinBox').style.display = 'none';
-      pendingPayload = null;
-    }
-
-    function verifyPin() {
-      let entered = document.getElementById('pinInput').value;
-      let correct = selectedUserObj.pin || "0000";
-      
-      if (entered === correct) {
-        closePin();
-        if (navigator.onLine) {
-          sendToGoogle(pendingPayload);
-        } else {
-          saveToOfflineQueue(pendingPayload);
-        }
-      } else {
-        alert("Fel PIN-kod. Försök igen.");
-        document.getElementById('pinInput').value = '';
-      }
-    }
-
-    function sendToGoogle(payload) {
-      setLoading(true);
-      let qs = new URLSearchParams(payload).toString();
-      
-      fetch(API_URL + "?" + qs)
-        .then(res => res.json())
-        .then(res => {
-          setLoading(false);
-          if (res.success) {
-            showStatus("Rapporten har sparats!", true);
-            resetForm();
-            loadData(); // Hämtar ny data, vilket automatiskt uppdaterar ens anteckning/badge
-          } else {
-            showStatus("Kunde inte spara: " + res.error, false);
-          }
-        })
-        .catch(() => {
-          setLoading(false);
-          saveToOfflineQueue(payload);
-        });
-    }
-
-    function saveToOfflineQueue(payload) {
-      let queue = JSON.parse(localStorage.getItem('tidrapport_queue') || '[]');
-      queue.push(payload);
-      localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
-      showStatus("Offline: Sparad i telefonen! Skickas vid uppkoppling.", true);
-      document.getElementById('statusBox').className = "status-offline";
-      resetForm();
-    }
-
-    function syncOfflineQueue() {
-      let queue = JSON.parse(localStorage.getItem('tidrapport_queue') || '[]');
-      if (queue.length === 0 || !navigator.onLine) return;
-
-      let payload = queue[0];
-      let qs = new URLSearchParams(payload).toString();
-
-      fetch(API_URL + "?" + qs)
-        .then(res => res.json())
-        .then(res => {
-          if (res.success) {
-            queue.shift();
-            localStorage.setItem('tidrapport_queue', JSON.stringify(queue));
-            if (queue.length > 0) setTimeout(syncOfflineQueue, 1000);
-            else { showStatus("Synkroniserad!", true); loadData(); }
-          }
-        });
-    }
-
-    function resetForm() {
-      document.getElementById('eventSelect').value = "";
-      document.getElementById('dateSelect').innerHTML = '<option value="">Välj händelse först</option>';
-      document.getElementById('noteInput').value = "";
-      selectedEvent = null;
-    }
-
-    function setLoading(isLoading) {
-      document.getElementById('submitBtn').disabled = isLoading;
-      document.getElementById('btnSpinner').style.display = isLoading ? 'inline-block' : 'none';
-      document.getElementById('btnText').textContent = isLoading ? 'Skickar...' : 'Skicka tidrapport';
-    }
-
-    function showStatus(msg, isSuccess) {
-      let box = document.getElementById('statusBox');
-      if(!msg) { box.style.display = 'none'; return; }
-      box.textContent = msg;
-      box.className = isSuccess ? 'status-success' : 'status-error';
-      box.style.display = 'block';
-      if(isSuccess) setTimeout(() => { if(box.textContent === msg) box.style.display = 'none'; }, 4000);
-    }
-  </script>
-</body>
-</html>
+        an
