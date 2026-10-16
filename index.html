@@ -25,7 +25,6 @@
     .app-wrapper { width: 100%; max-width: 580px; margin: 0 auto; position: relative; }
     .app-container { width: 100%; }
 
-    /* DELAD SKÄRM PÅ IPAD/DESKTOP */
     @media (min-width: 850px) {
       body { padding-top: 40px; }
       .app-wrapper { display: flex; justify-content: center; gap: 32px; max-width: 1080px; align-items: flex-start; }
@@ -44,9 +43,7 @@
     .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 14px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
     .seg-btn.active { background: #636366; color: #FFFFFF; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
-    #tabDashBtn { display: none; } /* Göm från mobil */
 
-    /* TOGGLES: KALENDER / SPONTANT */
     .inner-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 3px; margin-bottom: 12px; }
     .in-btn { flex: 1; padding: 8px; font-size: 14px; border-radius: 6px; border: none; background: transparent; color: var(--ios-secondary-label); font-weight: 600; cursor: pointer; }
     .in-btn.active { background: rgba(255,255,255,0.15); color: #FFF; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
@@ -60,7 +57,6 @@
     input[type="text"]::placeholder { color: var(--ios-separator); }
     .time-badge { font-size: 17px; font-weight: 500; color: var(--ios-accent); background: rgba(255, 149, 0, 0.15); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
 
-    /* IOS TOGGLE SWITCH FÖR ÄTA */
     .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; inset: 0; background-color: rgba(118, 118, 128, 0.4); transition: .3s; border-radius: 31px; }
@@ -68,8 +64,7 @@
     input:checked + .slider { background-color: var(--ios-green); }
     input:checked + .slider:before { transform: translateX(20px); }
     
-    /* FOTO-KNAPP */
-    .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.05); color: var(--ios-accent); font-weight: 600; border-radius: 12px; cursor: pointer; font-size: 16px; border: 1px dashed var(--ios-separator); margin: 0 16px 16px 16px; }
+    .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.05); color: var(--ios-accent); font-weight: 600; border-radius: 12px; cursor: pointer; font-size: 16px; border: 1px dashed var(--ios-separator); }
 
     textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; padding: 12px 16px; }
 
@@ -77,7 +72,6 @@
     .ios-btn:active { opacity: 0.8; transform: scale(0.98); }
     .ios-btn.blue { background-color: #0A84FF; box-shadow: 0 4px 14px rgba(10,132,255,0.3); margin-top: 16px; }
     
-    /* MODALS / PICKERS */
     .action-sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 100; opacity: 0; transition: opacity 0.3s; }
     .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
     .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-radius: 16px 16px 0 0; z-index: 101; transition: bottom 0.35s; padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
@@ -94,7 +88,7 @@
     .pin-btn { flex: 1; padding: 14px; background: none; border: none; color: var(--ios-accent); font-size: 17px; cursor: pointer; }
     #statusBox { display: none; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-weight: 500; text-align: center; font-size: 15px; }
 
-    /* DASHBOARD (För inbäddning på iPad/Desktop) */
+    /* DASHBOARD */
     .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
     .dash-card { background: var(--ios-card); padding: 14px 10px; border-radius: 12px; border: 0.5px solid rgba(255, 255, 255, 0.08); text-align: center; }
     .dash-card-title { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
@@ -138,40 +132,65 @@
           </div>
         </div>
 
+        <!-- ORDINIARIE ARBETE (GÖMS INTE, FUNGERAR SOM VANLIGT) -->
         <div class="section-title">Typ av uppdrag</div>
         <div class="inner-toggle">
           <button class="in-btn active" id="btnKalender" onclick="setJobType('kalender')">📅 Kalenderjobb</button>
           <button class="in-btn" id="btnSpontant" onclick="setJobType('spontant')">✍️ Spontant / Annat</button>
         </div>
 
-        <div class="ios-card">
-          <!-- ÄTA TOGGLE -->
+        <div class="ios-card" id="mainJobCard">
+          <div id="kalenderBlock">
+            <div class="ios-row"><span>Kalender</span><select id="eventSelect" onchange="handleEventChange()"><option>Laddar...</option></select></div>
+            <div class="ios-row"><span>Datum</span><select id="dateSelect"><option>Välj händelse</option></select></div>
+          </div>
+          <div id="spontantBlock" style="display:none;">
+            <div class="ios-row"><span>Datum</span><input type="date" id="spontantDate"></div>
+            <div class="ios-row" style="border-bottom:none;"><span>Vad har gjorts?</span></div>
+            <textarea id="spontantAktivitet" placeholder="T.ex. Maskinunderhåll..." style="min-height: 50px; padding-top:0; border-bottom: 0.5px solid var(--ios-separator); border-radius:0;"></textarea>
+          </div>
+        </div>
+
+        <!-- ================= ÄTA-SEKTIONEN (HELT DOLT TILLS MAN TOGGLAR) ================= -->
+        <div class="section-title">Tilläggsarbete (ÄTA)</div>
+        <div class="ios-card" style="border: 0.5px solid rgba(255, 149, 0, 0.4);">
+          
           <div class="ios-row" style="background: rgba(255, 149, 0, 0.1);">
             <span style="font-weight: 600; color: var(--ios-yellow);">⚠️ Markera som ÄTA</span>
             <label class="switch"><input type="checkbox" id="ataToggle" onchange="handleAtaToggle()"><span class="slider"></span></label>
           </div>
           
-          <!-- BETALSTÄLLE -->
-          <div class="ios-row">
-            <span>Betalställe</span>
-            <select id="locationSelect" onchange="handleLocationChange()"><option value="Blacksta">Blacksta</option></select>
-          </div>
-          <div class="ios-row" id="customLocationRow" style="display:none; background: rgba(255,255,255,0.03);">
-            <span style="font-size: 15px; color: var(--ios-secondary-label);">Ny plats:</span>
-            <input type="text" id="customLocationInput" placeholder="T.ex. Lundby Gård">
-          </div>
+          <!-- UTFÄLLBAR ÄTA-BOX -->
+          <div id="ataBlock" style="display: none; background: rgba(255, 149, 0, 0.02);">
+            
+            <div class="ios-row">
+              <span>Datum för ÄTA</span>
+              <input type="date" id="ataDate">
+            </div>
 
-          <!-- KALENDERVY -->
-          <div id="kalenderBlock">
-            <div class="ios-row"><span>Kalender</span><select id="eventSelect" onchange="handleEventChange()"><option>Laddar...</option></select></div>
-            <div class="ios-row"><span>Datum</span><select id="dateSelect"><option>Välj händelse</option></select></div>
-          </div>
-
-          <!-- SPONTANVY -->
-          <div id="spontantBlock" style="display:none;">
-            <div class="ios-row"><span>Datum</span><input type="date" id="spontantDate"></div>
-            <div class="ios-row" style="border-bottom:none;"><span>Vad har gjorts?</span></div>
-            <textarea id="spontantAktivitet" placeholder="T.ex. Lagat vattenrör i stall 4..." style="min-height: 50px; padding-top:0; border-bottom: 0.5px solid var(--ios-separator); border-radius:0;"></textarea>
+            <div class="ios-row">
+              <span>Betalställe</span>
+              <select id="locationSelect" onchange="handleLocationChange()"><option value="Blacksta">Blacksta</option></select>
+            </div>
+            
+            <div class="ios-row" id="customLocationRow" style="display:none; background: rgba(255,255,255,0.03);">
+              <span style="font-size: 15px; color: var(--ios-secondary-label);">Ny plats:</span>
+              <input type="text" id="customLocationInput" placeholder="T.ex. Lundby Gård">
+            </div>
+            
+            <div class="ios-row" style="border-bottom:none;">
+              <span style="font-size: 15px; color: var(--ios-secondary-label);">Vad gjordes? (Fritext ÄTA)</span>
+            </div>
+            <textarea id="ataAktivitet" placeholder="Beskriv tillägget, t.ex. Lagat vattenrör i stall 4..." style="min-height: 50px; padding-top:0; border-bottom: 0.5px solid var(--ios-separator); border-radius:0;"></textarea>
+            
+            <!-- BILD-UNDERLAG -->
+            <div style="padding: 16px;">
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
+              <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
+                <svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+                <span id="photoStatus">Bifoga bild-underlag</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -181,15 +200,6 @@
           <div class="ios-row"><span>Starttid</span><div class="time-badge" id="startBadge" onclick="openTimePicker('start')">07:00</div></div>
           <div class="ios-row"><span>Sluttid</span><div class="time-badge" id="endBadge" onclick="openTimePicker('end')">16:00</div></div>
           <div class="ios-row" style="background: rgba(255,255,255,0.03);"><span>Arbetad tid</span><span id="totalDurationText" style="font-weight: 600;">9 tim 0 min</span></div>
-        </div>
-
-        <!-- FOTOBEVIS (Visas bara när ÄTA är på) -->
-        <div id="photoBlock" style="display: none;">
-          <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
-          <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
-            <svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
-            <span id="photoStatus">Bifoga fotobevis</span>
-          </div>
         </div>
 
         <div class="ios-card"><textarea id="noteInput" placeholder="Övrig anteckning (frivilligt)..."></textarea></div>
@@ -255,6 +265,7 @@
 
     window.onload = () => { 
       document.getElementById('spontantDate').valueAsDate = new Date();
+      document.getElementById('ataDate').valueAsDate = new Date(); // ÄTA får dagens datum som standard
       setupWheels(); loadData(); loadDashboard();
       window.addEventListener('online', updateNetworkStatus); 
       window.addEventListener('offline', updateNetworkStatus);
@@ -276,15 +287,22 @@
       document.getElementById('spontantBlock').style.display = type==='spontant' ? 'block' : 'none';
     }
 
+    // FÄLL UT / DÖLJ ÄTA-BLOCKET
     function handleAtaToggle() {
       let isAta = document.getElementById('ataToggle').checked;
-      document.getElementById('photoBlock').style.display = isAta ? 'block' : 'none';
-      if(!isAta) { currentPhotoBase64 = ""; document.getElementById('photoStatus').textContent = "Bifoga fotobevis"; document.getElementById('photoStatus').style.color = "var(--ios-accent)"; }
+      document.getElementById('ataBlock').style.display = isAta ? 'block' : 'none';
+      
+      // Återställ bilden om man ångrar och stänger av ÄTA
+      if(!isAta) { 
+        currentPhotoBase64 = ""; 
+        document.getElementById('photoStatus').textContent = "Bifoga bild-underlag"; 
+        document.getElementById('photoStatus').style.color = "var(--ios-accent)"; 
+      }
     }
 
     function handleLocationChange() { document.getElementById('customLocationRow').style.display = (document.getElementById('locationSelect').value === "NEW") ? 'flex' : 'none'; }
 
-    // BILD-KOMPRIMERING FÖR ÄTA
+    // BILD-KOMPRIMERING
     function compressAndSaveImage(e) {
       let file = e.target.files[0]; if(!file) return;
       document.getElementById('photoStatus').textContent = "Laddar bild...";
@@ -298,7 +316,7 @@
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.6).split(',')[1];
-          document.getElementById('photoStatus').textContent = "Fotobevis sparat ✓";
+          document.getElementById('photoStatus').textContent = "Bild-underlag sparat ✓";
           document.getElementById('photoStatus').style.color = "var(--ios-green)";
         }
         img.src = ev.target.result;
@@ -350,7 +368,6 @@
     function populateEvents() { let s = document.getElementById('eventSelect'); s.innerHTML='<option value="">-- Välj händelse --</option>'; calendarEvents.forEach((e,i)=> s.innerHTML+=`<option value="${i}">${new Date(e.start).toLocaleDateString('sv-SE',{month:'short',day:'numeric'})}: ${e.title}</option>`); }
     function handleEventChange() { let i=document.getElementById('eventSelect').value, d=document.getElementById('dateSelect'); d.innerHTML=''; if(!i){d.innerHTML='<option>Välj händelse</option>'; selectedEvent=null; return;} selectedEvent=calendarEvents[i]; let c=new Date(selectedEvent.start); d.innerHTML+=`<option value="${c.toISOString().split('T')[0]}">${c.toLocaleDateString('sv-SE',{weekday:'short',day:'numeric',month:'short'})}</option>`; }
 
-    // ANTECKNINGS-FLIKEN OCH DASHBOARD-LOGIK
     function parseMins(str) { if(!str)return 0; let s=String(str).toLowerCase(), h=0, m=0; let hm=s.match(/(\d+)\s*(tim|h)/); if(hm)h=parseInt(hm[1]); let mm=s.match(/(\d+)\s*(min|m)/); if(mm)m=parseInt(mm[1]); if(!hm&&!mm){let n=parseFloat(s.replace(',','.')); if(!isNaN(n))return Math.round(n*60);} return h*60+m; }
     function fmtHrs(m) { let h=m/60; return (Number.isInteger(h)?h:h.toFixed(1).replace('.',','))+" tim"; }
 
@@ -392,25 +409,42 @@
       document.getElementById('dashPersonList').innerHTML=html;
     }
 
-    // SPARA OCH SKICKA
     function showStatus(msg) { let b=document.getElementById('statusBox'); b.textContent=msg; b.style.display='block'; b.style.background='rgba(50,215,75,0.2)'; b.style.color='#32D74B'; setTimeout(()=>{if(b.textContent===msg)b.style.display='none';}, 4000); }
 
     function initiateSubmit() {
       if(!selectedUserObj) return alert("Välj ditt namn först.");
       
-      let loc = document.getElementById('locationSelect').value;
-      if (loc === "NEW") { loc = document.getElementById('customLocationInput').value; if(!loc) return alert("Skriv in den nya platsen."); }
-      
-      let akt = "", dat = "";
+      let isAta = document.getElementById('ataToggle').checked;
+      let loc = "Blacksta"; // Standard om det inte är ÄTA
+      let akt = ""; 
+      let dat = "";
+
+      // 1. Hämta grund-uppdrag (Kalender eller Spontant)
       if (jobMode === 'kalender') {
-        if(!selectedEvent) return alert("Välj en kalenderhändelse.");
-        dat = document.getElementById('dateSelect').value; akt = selectedEvent.title;
+        if(!selectedEvent) return alert("Välj en kalenderhändelse först.");
+        dat = document.getElementById('dateSelect').value; 
+        akt = selectedEvent.title;
       } else {
-        dat = document.getElementById('spontantDate').value; akt = document.getElementById('spontantAktivitet').value || "Spontant arbete";
+        dat = document.getElementById('spontantDate').value; 
+        akt = document.getElementById('spontantAktivitet').value || "Spontant arbete";
+      }
+
+      // 2. Om ÄTA är påslaget, använd ÄTA-uppgifterna istället
+      if (isAta) {
+        loc = document.getElementById('locationSelect').value;
+        if (loc === "NEW") { 
+          loc = document.getElementById('customLocationInput').value; 
+          if(!loc) return alert("Skriv in namnet på det nya betalstället."); 
+        }
+        
+        dat = document.getElementById('ataDate').value; // Använder det dedikerade ÄTA-datumet
+        let ataDesc = document.getElementById('ataAktivitet').value || "Inget beskrivet";
+        
+        // Exempel: "[ÄTA] Tvätt TV7 | Bytte ventil"
+        akt = "[ÄTA] " + akt + " | " + ataDesc;
       }
 
       akt += " (" + document.getElementById('passSelect').value + ")";
-      if(document.getElementById('ataToggle').checked) akt = "[ÄTA] " + akt;
 
       sendToGoogle({
         action: 'saveReport', anvandare: selectedUserObj.name, datum: dat, aktivitet: akt, plats: loc,
@@ -446,6 +480,7 @@
           showStatus("Rapporten har sparats!");
           document.getElementById('submitBtn').textContent = "Skicka tidrapport";
           document.getElementById('noteInput').value = "";
+          document.getElementById('ataAktivitet').value = "";
           document.getElementById('ataToggle').checked = false; handleAtaToggle();
         }
         setTimeout(() => { loadData(); loadDashboard(); }, 1000);
