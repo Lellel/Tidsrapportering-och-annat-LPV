@@ -229,9 +229,13 @@
         <button class="ios-btn" id="submitBtn" onclick="initiateSubmit()">Skicka tidrapport</button>
       </div>
 
-      <!-- FLIK 2: ORAPPORTERAT / FAKTURA -->
+      <!-- FLIK 2: ORAPPORTERAT / FAKTURA (NU MED UPPDATERINGSKNAPP) -->
       <div id="viewNotes" style="display: none;">
-        <div class="section-title">Orapporterade tider</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding:0 4px;">
+          <div class="section-title" style="margin:0;">Orapporterade tider</div>
+          <button onclick="forceRefreshNotes(this)" style="background:none; border:none; color:var(--ios-accent); font-size:13px; font-weight:600; cursor:pointer; padding:4px 8px;">↻ Uppdatera</button>
+        </div>
+
         <div class="ios-card" style="padding: 16px; min-height: 220px;">
           <ul id="noteBulletList" style="list-style:none; line-height:1.6;"><li>Laddar...</li></ul>
           <div style="border-top:0.5px solid var(--ios-separator); margin-top:14px; padding-top:12px; font-size:16px;">
@@ -252,22 +256,18 @@
       
       <div id="dashContent" style="display: none;">
         <div class="summary-grid">
-          <!-- GUL: Totalt -->
           <div class="apple-box apple-box-yellow">
             <span class="box-title">Totalt</span>
             <span class="box-val" id="dashTot">0 tim</span>
           </div>
-          <!-- GRÖN: Klart -->
           <div class="apple-box apple-box-green">
             <span class="box-title">Klart</span>
             <span class="box-val" id="dashDone">0 tim</span>
           </div>
-          <!-- RÖD: Väntar -->
           <div class="apple-box apple-box-red">
             <span class="box-title">Väntar</span>
             <span class="box-val" id="dashPend">0 tim</span>
           </div>
-          <!-- LILA: ÄTA -->
           <div class="apple-box apple-box-purple">
             <span class="box-title">ÄTA</span>
             <span class="box-val" id="dashAta">0 tim</span>
@@ -331,7 +331,6 @@
         document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === type);
       });
 
-      // Passraden visas endast vid kalender
       document.getElementById('passRow').style.display = (type === 'kalender') ? 'flex' : 'none';
 
       if (type === 'kalender') {
@@ -351,7 +350,7 @@
           document.getElementById('customTextLabel').textContent = "Beskrivning av ÄTA";
           document.getElementById('customText').placeholder = "Vad gjordes? T.ex. Lagat ventil i stall 4...";
           document.getElementById('photoBlock').style.display = 'block';
-          document.getElementById('noteWrapper').style.display = 'none'; // Ingen extra anteckning vid ÄTA
+          document.getElementById('noteWrapper').style.display = 'none';
         }
       }
 
@@ -417,6 +416,25 @@
           document.getElementById('dashLoading').style.display = 'none'; document.getElementById('dashContent').style.display = 'block';
         }).catch(e=>console.log("Dash err:",e));
       }
+    }
+
+    function forceRefreshNotes(btn) {
+      if (btn) {
+        btn.textContent = "Hämtar...";
+        btn.style.opacity = "0.6";
+      }
+      document.getElementById('noteBulletList').innerHTML = "<div style='color:var(--ios-secondary-label);text-align:center;padding:20px;'>Hämtar senaste tiderna...</div>";
+      document.getElementById('noteSumText').textContent = "0 tim";
+      
+      loadData();
+      loadDashboard();
+
+      setTimeout(() => {
+        if (btn) {
+          btn.textContent = "↻ Uppdatera";
+          btn.style.opacity = "1";
+        }
+      }, 1200);
     }
 
     function populateLocations() {
