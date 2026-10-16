@@ -42,13 +42,13 @@
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ios-green); }
     .status-dot.offline { background: var(--ios-accent); }
 
-    /* Huvudflikar: Rapportera / Orapporterat */
+    /* Huvudflikar */
     .segmented-control { display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 10px; padding: 2px; margin-bottom: 18px; }
     .seg-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 14px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
     .seg-btn.active { background: #636366; color: #FFFFFF; }
     .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 1px 6px; border-radius: 10px; margin-left: 5px; }
 
-    /* Trevägsväljare: Kalender / Spontant / ÄTA */
+    /* Trevägsväljare: Kalender / Nya / ÄTA */
     .type-control { display: flex; background: rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 2px; margin: 12px 14px 14px 14px; }
     .type-btn { flex: 1; border: none; background: transparent; padding: 7px 0; font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
     .type-btn.active { background: rgba(255, 255, 255, 0.16); color: #FFFFFF; }
@@ -64,7 +64,7 @@
 
     .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.04); color: var(--ios-accent); font-weight: 500; border-radius: 8px; cursor: pointer; font-size: 14px; border: 1px dashed var(--ios-separator); margin: 12px 16px; }
 
-    textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 15px; color: var(--ios-label); outline: none; resize: none; min-height: 50px; padding: 10px 16px; }
+    textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 15px; color: var(--ios-label); outline: none; resize: none; min-height: 55px; padding: 10px 16px; }
 
     .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
     .ios-btn:active { opacity: 0.8; }
@@ -87,7 +87,7 @@
     .pin-btn { flex: 1; padding: 12px; background: none; border: none; color: var(--ios-accent); font-size: 16px; cursor: pointer; }
     #statusBox { display: none; padding: 10px; border-radius: 10px; margin-bottom: 14px; font-weight: 500; text-align: center; font-size: 14px; }
 
-    /* Dashboard-översikt */
+    /* Dashboard */
     .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
     .dash-card { background: var(--ios-card); padding: 12px 8px; border-radius: 10px; border: 0.5px solid rgba(255, 255, 255, 0.08); text-align: center; }
     .dash-card-title { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
@@ -134,10 +134,10 @@
         <div class="section-title">Uppdrag</div>
         <div class="ios-card">
           
-          <!-- En enda samlad trevägsväljare -->
+          <!-- Trevägsväljare: Kalender / Nya / ÄTA -->
           <div class="type-control">
             <button class="type-btn active" id="btnKalender" onclick="setType('kalender')">Kalender</button>
-            <button class="type-btn" id="btnSpontant" onclick="setType('spontant')">Spontant</button>
+            <button class="type-btn" id="btnNya" onclick="setType('nya')">Nya</button>
             <button class="type-btn" id="btnAta" onclick="setType('ata')">ÄTA</button>
           </div>
 
@@ -147,31 +147,32 @@
             <div class="ios-row"><span>Datum</span><select id="dateSelect"><option>Välj händelse</option></select></div>
           </div>
 
-          <!-- LÄGE 2: SPONTANT (Helt fristående) -->
-          <div id="blockSpontant" style="display: none;">
-            <div class="ios-row"><span>Datum</span><input type="date" id="spontantDate"></div>
-            <div class="ios-row" style="border-bottom:none;"><span style="color:var(--ios-secondary-label);font-size:14px;">Vad har gjorts?</span></div>
-            <textarea id="spontantText" placeholder="T.ex. Tvätt av maskinhall..."></textarea>
-          </div>
-
-          <!-- LÄGE 3: ÄTA (Helt fristående med underlag) -->
-          <div id="blockAta" style="display: none;">
-            <div class="ios-row"><span>Datum</span><input type="date" id="ataDate"></div>
+          <!-- LÄGE 2 & 3: NYA OCH ÄTA (Med Datum, Betalställe och Text) -->
+          <div id="blockCustom" style="display: none;">
+            <div class="ios-row"><span>Datum</span><input type="date" id="customDate"></div>
+            
             <div class="ios-row">
               <span>Betalställe</span>
               <select id="locationSelect" onchange="handleLocationChange()"><option value="Blacksta">Blacksta</option></select>
             </div>
-            <div class="ios-row" id="customLocationRow" style="display:none;">
+            
+            <div class="ios-row" id="customLocationRow" style="display:none; background: rgba(255,255,255,0.03);">
               <span style="color:var(--ios-secondary-label);font-size:14px;">Ny plats:</span>
               <input type="text" id="customLocationInput" placeholder="T.ex. Lundby Gård">
             </div>
-            <div class="ios-row" style="border-bottom:none;"><span style="color:var(--ios-secondary-label);font-size:14px;">Beskrivning av ÄTA</span></div>
-            <textarea id="ataText" placeholder="Vad gjordes? T.ex. Lagat ventil i stall 4..."></textarea>
             
-            <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
-            <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
-              <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
-              <span id="photoStatus">Bifoga bild-underlag</span>
+            <div class="ios-row" style="border-bottom:none;">
+              <span id="customTextLabel" style="color:var(--ios-secondary-label);font-size:14px;">Vad har gjorts?</span>
+            </div>
+            <textarea id="customText" placeholder="Beskriv arbetet..."></textarea>
+            
+            <!-- Bild-underlag: Visas enbart vid ÄTA -->
+            <div id="photoBlock" style="display: none;">
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
+              <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
+                <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+                <span id="photoStatus">Bifoga bild-underlag</span>
+              </div>
             </div>
           </div>
         </div>
@@ -184,7 +185,11 @@
           <div class="ios-row"><span>Arbetad tid</span><span id="totalDurationText" style="font-weight: 600;">9 tim 0 min</span></div>
         </div>
 
-        <div class="ios-card"><textarea id="noteInput" placeholder="Anteckning (frivilligt)..."></textarea></div>
+        <!-- Extra anteckning: Döljs automatiskt när ÄTA är valt -->
+        <div class="ios-card" id="noteCard">
+          <textarea id="noteInput" placeholder="Anteckning (frivilligt)..."></textarea>
+        </div>
+
         <button class="ios-btn" id="submitBtn" onclick="initiateSubmit()">Skicka tidrapport</button>
       </div>
 
@@ -246,8 +251,7 @@
 
     window.onload = () => { 
       let today = new Date().toISOString().split('T')[0];
-      document.getElementById('spontantDate').value = today;
-      document.getElementById('ataDate').value = today;
+      document.getElementById('customDate').value = today;
       setupWheels(); loadData(); loadDashboard();
       window.addEventListener('online', updateNetworkStatus); 
       window.addEventListener('offline', updateNetworkStatus);
@@ -268,14 +272,34 @@
       if(v==='notes') renderNotes(); 
     }
 
-    // Växla mellan de tre lägena
     function setType(type) {
       currentType = type;
-      ['kalender', 'spontant', 'ata'].forEach(t => {
+      ['kalender', 'nya', 'ata'].forEach(t => {
         document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === type);
-        document.getElementById('block' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = (t === type) ? 'block' : 'none';
       });
-      if(type !== 'ata') {
+
+      if (type === 'kalender') {
+        document.getElementById('blockKalender').style.display = 'block';
+        document.getElementById('blockCustom').style.display = 'none';
+        document.getElementById('noteCard').style.display = 'block';
+      } else {
+        document.getElementById('blockKalender').style.display = 'none';
+        document.getElementById('blockCustom').style.display = 'block';
+
+        if (type === 'nya') {
+          document.getElementById('customTextLabel').textContent = "Vad har gjorts?";
+          document.getElementById('customText').placeholder = "T.ex. Tvätt av maskinhall...";
+          document.getElementById('photoBlock').style.display = 'none';
+          document.getElementById('noteCard').style.display = 'block';
+        } else if (type === 'ata') {
+          document.getElementById('customTextLabel').textContent = "Beskrivning av ÄTA";
+          document.getElementById('customText').placeholder = "Vad gjordes? T.ex. Lagat ventil i stall 4...";
+          document.getElementById('photoBlock').style.display = 'block';
+          document.getElementById('noteCard').style.display = 'none'; // Döljs vid ÄTA
+        }
+      }
+
+      if (type !== 'ata') {
         currentPhotoBase64 = "";
         document.getElementById('photoStatus').textContent = "Bifoga bild-underlag";
         document.getElementById('photoStatus').style.color = "var(--ios-accent)";
@@ -399,25 +423,33 @@
       let loc = "Blacksta";
       let akt = ""; 
       let dat = "";
+      let note = "";
 
       if (currentType === 'kalender') {
         if(!selectedEvent) return alert("Välj en kalenderhändelse först.");
         dat = document.getElementById('dateSelect').value; 
         akt = selectedEvent.title;
-      } else if (currentType === 'spontant') {
-        dat = document.getElementById('spontantDate').value; 
-        akt = document.getElementById('spontantText').value.trim() || "Spontant arbete";
-      } else if (currentType === 'ata') {
+        note = document.getElementById('noteInput').value;
+      } else {
+        // Gemensamt betalställe för Nya och ÄTA
         loc = document.getElementById('locationSelect').value;
         if (loc === "NEW") { 
-          loc = document.getElementById('customLocationInput').value; 
+          loc = document.getElementById('customLocationInput').value.trim(); 
           if(!loc) return alert("Skriv in namnet på betalstället."); 
         }
-        dat = document.getElementById('ataDate').value;
-        if (!dat) return alert("Välj ett datum för ÄTA.");
-        let ataDesc = document.getElementById('ataText').value.trim();
-        if (!ataDesc) return alert("Beskriv vad som gjordes.");
-        akt = "[ÄTA] " + ataDesc;
+        dat = document.getElementById('customDate').value;
+        if(!dat) return alert("Välj ett datum.");
+
+        let textVal = document.getElementById('customText').value.trim();
+
+        if (currentType === 'nya') {
+          akt = textVal || "Nytt arbete";
+          note = document.getElementById('noteInput').value;
+        } else if (currentType === 'ata') {
+          if (!textVal) return alert("Beskriv vad som gjorts under ÄTA.");
+          akt = "[ÄTA] " + textVal;
+          note = ""; // Ingen extra anteckning för ÄTA
+        }
       }
 
       akt += " (" + document.getElementById('passSelect').value + ")";
@@ -425,7 +457,7 @@
       sendToGoogle({
         action: 'saveReport', anvandare: selectedUserObj.name, datum: dat, aktivitet: akt, plats: loc,
         starttid: `${pad(timeState.startH)}:${pad(timeState.startM)}`, sluttid: `${pad(timeState.endH)}:${pad(timeState.endM)}`,
-        totaltid: calcDur(), anteckning: document.getElementById('noteInput').value, photoBase64: currentPhotoBase64
+        totaltid: calcDur(), anteckning: note, photoBase64: (currentType === 'ata' ? currentPhotoBase64 : "")
       }, 'Skickar...');
     }
 
@@ -456,8 +488,7 @@
           showStatus("Rapporten har sparats!");
           document.getElementById('submitBtn').textContent = "Skicka tidrapport";
           document.getElementById('noteInput').value = "";
-          document.getElementById('spontantText').value = "";
-          document.getElementById('ataText').value = "";
+          document.getElementById('customText').value = "";
           setType('kalender');
         }
         setTimeout(() => { loadData(); loadDashboard(); }, 1000);
