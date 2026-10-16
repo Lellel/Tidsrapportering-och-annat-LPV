@@ -119,7 +119,7 @@
     .note-updated-header { color: var(--ios-accent); font-style: italic; font-size: 14px; margin-bottom: 18px; }
     .note-h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 14px; color: var(--ios-label); }
     .note-bullet-list { list-style-type: disc; padding-left: 24px; margin-bottom: 22px; }
-    .note-bullet-list li { font-size: 17px; line-height: 1.6; color: #EBEBF5; margin-bottom: 6px; }
+    .note-bullet-list li { font-size: 17px; line-height: 1.5; color: #EBEBF5; margin-bottom: 12px; }
     .note-summary { font-size: 18px; border-top: 0.5px solid var(--ios-separator); padding-top: 14px; margin-top: 10px; color: #FFF; }
     .empty-note-state { text-align: center; padding: 40px 10px; color: var(--ios-secondary-label); font-size: 16px; }
 
@@ -259,7 +259,6 @@
   <form id="tank_form" method="POST" target="tank_iframe" style="display:none;"></form>
 
   <script>
-    // DIN NYA APPS SCRIPT WEBAPP-URL!
     const API_URL = "https://script.google.com/macros/s/AKfycbytaWBk-Zw-ohmKI1pknxOS_A9KjM0-mTMQYkBSTPWsdx21iAPAss7QIatepX9bvXlg_w/exec";
     
     let staffData = [], calendarEvents = [], unreportedData = [];
@@ -339,18 +338,33 @@
 
       let totalMinutesAll = 0, groupedByDate = {};
       myUnreported.forEach(item => {
-        let d = new Date(item.datum), dateLabel = item.datum;
+        let rawDate = String(item.datum).split('T')[0];
+        let d = new Date(rawDate + "T12:00:00");
+        let dateLabel = rawDate;
         if (!isNaN(d.getTime())) dateLabel = `${sweDays[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`;
         let mins = parseDurationToMinutes(item.totaltid);
         totalMinutesAll += mins;
-        if (!groupedByDate[dateLabel]) groupedByDate[dateLabel] = 0;
-        groupedByDate[dateLabel] += mins;
+        
+        if (!groupedByDate[dateLabel]) {
+          groupedByDate[dateLabel] = { mins: 0, notes: [] };
+        }
+        groupedByDate[dateLabel].mins += mins;
+        if (item.anteckning && item.anteckning.trim() !== '') {
+          groupedByDate[dateLabel].notes.push(item.anteckning.trim());
+        }
       });
 
       let html = "";
-      for (const [dateLabel, totalMinsForDay] of Object.entries(groupedByDate)) {
-        let hoursDec = (totalMinsForDay / 60);
-        html += `<li>${dateLabel}, ${Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',')} timmar</li>`;
+      for (const [dateLabel, dayData] of Object.entries(groupedByDate)) {
+        let hoursDec = (dayData.mins / 60);
+        let hoursFormatted = Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',');
+        
+        let notesHtml = "";
+        if (dayData.notes.length > 0) {
+          notesHtml = dayData.notes.map(n => `<div style="font-size: 14px; color: var(--ios-secondary-label); margin-top: 2px; line-height: 1.35; font-weight: normal;">${n}</div>`).join('');
+        }
+        
+        html += `<li><div>${dateLabel}, ${hoursFormatted} timmar</div>${notesHtml}</li>`;
       }
       listEl.innerHTML = html;
       let totalHoursDec = (totalMinutesAll / 60);
@@ -475,7 +489,7 @@
     function verifyPin() {
       let entered = document.getElementById('pinInput').value, correct = selectedUserObj.pin || "0000";
       if (entered === correct) {
-        let payloadToSend = pendingPayload; // RÄDDNINGSAKTION!
+        let payloadToSend = pendingPayload;
         closePin();
         if (navigator.onLine) sendToGoogle(payloadToSend); else saveToOfflineQueue(payloadToSend);
       } else { alert("Fel PIN-kod. Försök igen."); document.getElementById('pinInput').value = ''; }
