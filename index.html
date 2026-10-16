@@ -61,7 +61,7 @@
     .status-dot.offline { background: var(--ios-yellow); box-shadow: 0 0 6px rgba(255, 149, 0, 0.6); }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-    /* FLIKVAL */
+    /* FLIKVAL (SEGMENTED CONTROL) */
     .segmented-control {
       display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 12px; padding: 3px; margin-bottom: 16px; user-select: none;
     }
@@ -568,18 +568,24 @@
         }
       });
 
-      let text = `Tidrapport: ${selectedUserObj.name}\n\nOrapporterade tider:\n`;
+      let text = `Tidrapport: ${selectedUserObj.name}\n\n`;
+      
       for (const [dateLabel, dayData] of Object.entries(groupedByDate)) {
         let hoursDec = (dayData.mins / 60);
         let hoursFormatted = Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',');
-        text += `• ${dateLabel}, ${hoursFormatted} tim\n`;
+        
+        text += `${dateLabel} — ${hoursFormatted} tim\n`;
+        
         dayData.notes.forEach(n => {
-          text += `  "${n}"\n`;
+          text += `- ${n}\n`;
         });
+        
+        text += `\n`; 
       }
+      
       let totalHoursDec = (totalMinutesAll / 60);
       let totalFormatted = Number.isInteger(totalHoursDec) ? totalHoursDec : totalHoursDec.toFixed(1).replace('.', ',');
-      text += `\nSumma: ${totalFormatted} timmar`;
+      text += `Summa: ${totalFormatted} timmar`;
 
       // 1. Öppna SMS-appen
       window.location.href = `sms:&body=${encodeURIComponent(text)}`;
