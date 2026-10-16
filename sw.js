@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tidrapport-cache-v1.1114';
+const CACHE_NAME = 'tidrapport-cache-v1.1115';
 const urlsToCache = [
   './',
   './index.html',
