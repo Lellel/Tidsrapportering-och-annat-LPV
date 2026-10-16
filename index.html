@@ -17,6 +17,7 @@
       --ios-gray: #8E8E93; --ios-separator: rgba(84, 84, 88, 0.65);
       --ios-label: #FFFFFF; --ios-secondary-label: #EBEBF599;
       --ios-picker-item-h: 40px; --ios-yellow: #FF9500; --ios-green: #32D74B;
+      --ios-purple: #AF52DE;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background-color: var(--ios-bg); color: var(--ios-label); padding: calc(env(safe-area-inset-top) + 8px) 16px calc(env(safe-area-inset-bottom) + 30px) 16px; touch-action: manipulation; }
@@ -24,6 +25,7 @@
     .app-wrapper { width: 100%; max-width: 580px; margin: 0 auto; position: relative; }
     .app-container { width: 100%; }
 
+    /* DELAD SKÄRM PÅ IPAD/DESKTOP */
     @media (min-width: 850px) {
       body { padding-top: 40px; }
       .app-wrapper { display: flex; justify-content: center; gap: 32px; max-width: 1080px; align-items: flex-start; }
@@ -42,14 +44,14 @@
     .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 14px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
     .seg-btn.active { background: #636366; color: #FFFFFF; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
-    #tabDashBtn { display: none; }
+    #tabDashBtn { display: none; } /* Göm från mobil */
 
-    /* INNER TOGGLES (Kalender/Spontant) */
-    .inner-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 2px; margin-bottom: 12px; }
-    .in-btn { flex: 1; padding: 6px; font-size: 13px; border-radius: 6px; border: none; background: transparent; color: var(--ios-secondary-label); font-weight: 600; cursor: pointer; }
-    .in-btn.active { background: rgba(255,255,255,0.15); color: #FFF; }
+    /* TOGGLES: KALENDER / SPONTANT */
+    .inner-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 3px; margin-bottom: 12px; }
+    .in-btn { flex: 1; padding: 8px; font-size: 14px; border-radius: 6px; border: none; background: transparent; color: var(--ios-secondary-label); font-weight: 600; cursor: pointer; }
+    .in-btn.active { background: rgba(255,255,255,0.15); color: #FFF; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 
-    .section-title { font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; margin-left: 14px; margin-bottom: 5px; }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; margin-left: 14px; margin-bottom: 5px; margin-top: 18px; }
     .ios-card { background: var(--ios-card); border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 0.5px solid rgba(255, 255, 255, 0.08); }
     .ios-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--ios-separator); font-size: 17px; }
     .ios-row:last-child { border-bottom: none; }
@@ -58,36 +60,57 @@
     input[type="text"]::placeholder { color: var(--ios-separator); }
     .time-badge { font-size: 17px; font-weight: 500; color: var(--ios-accent); background: rgba(255, 149, 0, 0.15); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
 
-    /* IOS TOGGLE SWITCH */
-    .switch { position: relative; display: inline-block; width: 50px; height: 30px; }
+    /* IOS TOGGLE SWITCH FÖR ÄTA */
+    .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(118, 118, 128, 0.4); transition: .3s; border-radius: 30px; }
-    .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: rgba(118, 118, 128, 0.4); transition: .3s; border-radius: 31px; }
+    .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
     input:checked + .slider { background-color: var(--ios-green); }
     input:checked + .slider:before { transform: translateX(20px); }
     
-    .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.05); color: var(--ios-accent); font-weight: 600; border-radius: 10px; cursor: pointer; font-size: 15px; border: 1px dashed var(--ios-separator); margin: 0 16px 16px 16px; }
+    /* FOTO-KNAPP */
+    .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.05); color: var(--ios-accent); font-weight: 600; border-radius: 12px; cursor: pointer; font-size: 16px; border: 1px dashed var(--ios-separator); margin: 0 16px 16px 16px; }
 
     textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; padding: 12px 16px; }
 
-    .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-    .ios-btn.blue { background-color: #0A84FF; box-shadow: 0 4px 14px rgba(10,132,255,0.3); }
+    .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+    .ios-btn:active { opacity: 0.8; transform: scale(0.98); }
+    .ios-btn.blue { background-color: #0A84FF; box-shadow: 0 4px 14px rgba(10,132,255,0.3); margin-top: 16px; }
     
-    /* MODALS & ÖVRIGT SOM FÖRUT... (Har klippt lite CSS för att spara plats, behåll din gamla dash-css här om du vill) */
-    .action-sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; opacity: 0; transition: opacity 0.3s; }
+    /* MODALS / PICKERS */
+    .action-sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 100; opacity: 0; transition: opacity 0.3s; }
     .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
-    .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-radius: 16px 16px 0 0; z-index: 101; transition: bottom 0.35s; padding-bottom: 30px; }
+    .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-radius: 16px 16px 0 0; z-index: 101; transition: bottom 0.35s; padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
     .action-sheet.open { bottom: 0; }
     .picker-container { position: relative; height: 190px; display: flex; justify-content: center; overflow: hidden; }
     .picker-highlight { position: absolute; top: 75px; left: 16px; right: 16px; height: 40px; background: rgba(118, 118, 128, 0.24); border-radius: 10px; pointer-events: none; z-index: 31; }
     .picker-column { width: 95px; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; padding: 75px 0; z-index: 33; }
     .picker-column::-webkit-scrollbar { display: none; }
     .picker-item { height: 40px; line-height: 40px; text-align: center; font-size: 23px; font-weight: 600; color: #FFF; scroll-snap-align: center; }
+    
     .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(28,28,30,0.95); border-radius: 16px; z-index: 200; padding: 22px; text-align: center; border: 0.5px solid rgba(255,255,255,0.1); }
-    .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border-radius: 10px; margin-bottom: 18px; outline: none; background: #000; color: #FFF; }
+    .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border-radius: 10px; margin-bottom: 18px; outline: none; background: #000; color: #FFF; border: 1px solid var(--ios-separator); }
     .pin-buttons { display: flex; margin: 0 -22px -22px -22px; border-top: 0.5px solid var(--ios-separator); }
     .pin-btn { flex: 1; padding: 14px; background: none; border: none; color: var(--ios-accent); font-size: 17px; cursor: pointer; }
-    #statusBox { display: none; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-weight: 500; text-align: center; }
+    #statusBox { display: none; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-weight: 500; text-align: center; font-size: 15px; }
+
+    /* DASHBOARD (För inbäddning på iPad/Desktop) */
+    .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    .dash-card { background: var(--ios-card); padding: 14px 10px; border-radius: 12px; border: 0.5px solid rgba(255, 255, 255, 0.08); text-align: center; }
+    .dash-card-title { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+    .dash-card-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .val-accent { color: var(--ios-accent); }
+    .val-green { color: var(--ios-green); }
+    .val-red { color: #FF3B30; }
+    .val-purple { color: var(--ios-purple); }
+    .person-list { background: var(--ios-card); border-radius: 14px; border: 0.5px solid rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .person-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 0.5px solid var(--ios-separator); }
+    .person-row:last-child { border-bottom: none; }
+    .person-stats { display: flex; gap: 14px; text-align: right; }
+    .stat-box { display: flex; flex-direction: column; }
+    .stat-label { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; }
+    .stat-val { font-size: 14px; font-weight: 600; }
+    .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -105,96 +128,118 @@
       </div>
       <div id="statusBox"></div>
 
-      <!-- FLIK 1: RAPPORTERA -->
+      <!-- ================= FLIK 1: RAPPORTERA ================= -->
       <div id="viewReport">
         
         <div class="ios-card" style="margin-bottom: 24px;">
           <div class="ios-row">
-            <span>Användare</span>
-            <div class="time-badge" style="background:transparent; padding:0;" id="userValDisplay" onclick="openUserPicker()">Välj...</div>
+            <span style="font-weight: 600;">Din profil</span>
+            <div class="time-badge" style="background:transparent; padding:0;" id="userValDisplay" onclick="openUserPicker()">Välj ditt namn...</div>
           </div>
         </div>
 
-        <div class="section-title">Uppdragstyp</div>
+        <div class="section-title">Typ av uppdrag</div>
         <div class="inner-toggle">
-          <button class="in-btn active" id="btnKalender" onclick="setJobType('kalender')">📅 Kalender</button>
-          <button class="in-btn" id="btnSpontant" onclick="setJobType('spontant')">✍️ Spontant</button>
+          <button class="in-btn active" id="btnKalender" onclick="setJobType('kalender')">📅 Kalenderjobb</button>
+          <button class="in-btn" id="btnSpontant" onclick="setJobType('spontant')">✍️ Spontant / Annat</button>
         </div>
 
         <div class="ios-card">
-          <div class="ios-row">
-            <span style="font-weight: 600; color: var(--ios-yellow);">Markera som ÄTA</span>
+          <!-- ÄTA TOGGLE -->
+          <div class="ios-row" style="background: rgba(255, 149, 0, 0.1);">
+            <span style="font-weight: 600; color: var(--ios-yellow);">⚠️ Markera som ÄTA</span>
             <label class="switch"><input type="checkbox" id="ataToggle" onchange="handleAtaToggle()"><span class="slider"></span></label>
           </div>
           
+          <!-- BETALSTÄLLE -->
           <div class="ios-row">
             <span>Betalställe</span>
             <select id="locationSelect" onchange="handleLocationChange()"><option value="Blacksta">Blacksta</option></select>
           </div>
-          <div class="ios-row" id="customLocationRow" style="display:none;">
-            <span>Ny plats:</span>
+          <div class="ios-row" id="customLocationRow" style="display:none; background: rgba(255,255,255,0.03);">
+            <span style="font-size: 15px; color: var(--ios-secondary-label);">Ny plats:</span>
             <input type="text" id="customLocationInput" placeholder="T.ex. Lundby Gård">
           </div>
 
-          <!-- Kalendervy -->
+          <!-- KALENDERVY -->
           <div id="kalenderBlock">
             <div class="ios-row"><span>Kalender</span><select id="eventSelect" onchange="handleEventChange()"><option>Laddar...</option></select></div>
-            <div class="ios-row"><span>Datum</span><select id="dateSelect" onchange="updatePassOptions()"><option>Välj händelse</option></select></div>
+            <div class="ios-row"><span>Datum</span><select id="dateSelect"><option>Välj händelse</option></select></div>
           </div>
 
-          <!-- Spontanvy -->
+          <!-- SPONTANVY -->
           <div id="spontantBlock" style="display:none;">
             <div class="ios-row"><span>Datum</span><input type="date" id="spontantDate"></div>
             <div class="ios-row" style="border-bottom:none;"><span>Vad har gjorts?</span></div>
-            <textarea id="spontantAktivitet" placeholder="T.ex. Lagat vattenrör i stall 4..." style="min-height: 40px; padding-top:0;"></textarea>
+            <textarea id="spontantAktivitet" placeholder="T.ex. Lagat vattenrör i stall 4..." style="min-height: 50px; padding-top:0; border-bottom: 0.5px solid var(--ios-separator); border-radius:0;"></textarea>
           </div>
         </div>
 
         <div class="section-title">Arbetspass & Tider</div>
         <div class="ios-card">
-          <div class="ios-row"><span>Pass</span><select id="passSelect"><option>Pass 1</option><option>Pass 2</option><option>Övertid</option></select></div>
+          <div class="ios-row"><span>Pass</span><select id="passSelect"><option>Pass 1</option><option>Pass 2</option><option>Pass 3</option><option>Övertid</option></select></div>
           <div class="ios-row"><span>Starttid</span><div class="time-badge" id="startBadge" onclick="openTimePicker('start')">07:00</div></div>
           <div class="ios-row"><span>Sluttid</span><div class="time-badge" id="endBadge" onclick="openTimePicker('end')">16:00</div></div>
-          <div class="ios-row"><span>Arbetad tid</span><span id="totalDurationText">9 tim 0 min</span></div>
+          <div class="ios-row" style="background: rgba(255,255,255,0.03);"><span>Arbetad tid</span><span id="totalDurationText" style="font-weight: 600;">9 tim 0 min</span></div>
         </div>
 
-        <!-- Kamera, visas bara när ÄTA är PÅ -->
+        <!-- FOTOBEVIS (Visas bara när ÄTA är på) -->
         <div id="photoBlock" style="display: none;">
           <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
           <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
-            <svg style="width:20px;height:20px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+            <svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
             <span id="photoStatus">Bifoga fotobevis</span>
           </div>
         </div>
 
         <div class="ios-card"><textarea id="noteInput" placeholder="Övrig anteckning (frivilligt)..."></textarea></div>
-
         <button class="ios-btn" id="submitBtn" onclick="initiateSubmit()">Skicka tidrapport</button>
       </div>
 
-      <!-- FLIK 2: ORAPPORTERAT -->
+      <!-- ================= FLIK 2: ORAPPORTERAT / FAKTURA ================= -->
       <div id="viewNotes" style="display: none;">
-        <div class="ios-card" style="padding: 20px; min-height: 200px;">
-          <ul id="noteBulletList" style="list-style:none; line-height:1.6;">Laddar...</ul>
-          <div style="border-top:0.5px solid var(--ios-separator); margin-top:10px; padding-top:10px; font-weight:bold;">Summa: <span id="noteSumText">0 tim</span></div>
+        <div class="section-title">Din sammanställning</div>
+        <div class="ios-card" style="padding: 20px; min-height: 250px;">
+          <ul id="noteBulletList" style="list-style:none; line-height:1.6;"><li>Laddar...</li></ul>
+          <div style="border-top:0.5px solid var(--ios-separator); margin-top:14px; padding-top:14px; font-size:18px;">
+            <b>Summa:</b> <span id="noteSumText">0 tim</span>
+          </div>
         </div>
         
         <button class="ios-btn blue" onclick="sendInvoiceMail()">
           <svg style="width:20px;height:20px;fill:#FFF;margin-right:8px;" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-          Skicka in underlag (Fakturera)
+          <span id="invoiceBtnText">Klart att fakturera (Skicka underlag)</span>
         </button>
       </div>
+    </div>
+
+    <!-- ================= HÖGER SIDA: DASHBOARD (Paddan/Dator) ================= -->
+    <div id="viewDash" style="display: none;">
+      <div class="section-title">Team-Översikt</div>
+      <div id="dashLoading" style="padding: 30px; text-align: center; color: var(--ios-accent);">Hämtar data...</div>
+      
+      <div id="dashContent" style="display: none;">
+        <div class="summary-grid">
+          <div class="dash-card"><div class="dash-card-title">Totalt</div><div class="dash-card-value val-accent" id="dashTot">0 tim</div></div>
+          <div class="dash-card"><div class="dash-card-title">Klart (Bockat)</div><div class="dash-card-value val-green" id="dashDone">0 tim</div></div>
+          <div class="dash-card"><div class="dash-card-title">Väntar</div><div class="dash-card-value val-red" id="dashPend">0 tim</div></div>
+          <div class="dash-card" style="background: rgba(175, 82, 222, 0.1);"><div class="dash-card-title">Varav ÄTA</div><div class="dash-card-value val-purple" id="dashAta">0 tim</div></div>
+        </div>
+        <div class="section-title" style="margin-top: 10px;">Timmar per person</div>
+        <div class="person-list" id="dashPersonList"></div>
+      </div>
+      <button class="refresh-btn" onclick="loadDashboard()">↻ Ladda om översikt</button>
     </div>
   </div>
 
   <div class="action-sheet-overlay" id="overlay" onclick="closeAllPickers()"></div>
-  <div class="action-sheet" id="userPickerSheet"><div style="padding:15px;text-align:right;"><button onclick="confirmUser()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" style="width:100%" id="userColumn"></div></div></div>
-  <div class="action-sheet" id="timePickerSheet"><div style="padding:15px;text-align:right;"><button onclick="confirmTimePicker()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" id="timeHours"></div><div style="font-size:24px;color:#fff;z-index:33;padding:0 10px;">:</div><div class="picker-column" id="timeMinutes"></div></div></div>
+  <div class="action-sheet" id="userPickerSheet"><div style="padding:15px;display:flex;justify-content:space-between;border-bottom:0.5px solid var(--ios-separator);"><span style="color:var(--ios-secondary-label);font-weight:600;">VÄLJ PERSON</span><button onclick="confirmUser()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;font-weight:600;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" style="width:100%" id="userColumn"></div></div></div>
+  <div class="action-sheet" id="timePickerSheet"><div style="padding:15px;display:flex;justify-content:space-between;border-bottom:0.5px solid var(--ios-separator);"><span style="color:var(--ios-secondary-label);font-weight:600;" id="timePickerTitle">VÄLJ TID</span><button onclick="confirmTimePicker()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;font-weight:600;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" id="timeHours"></div><div style="font-size:24px;color:#fff;z-index:33;padding:0 10px;">:</div><div class="picker-column" id="timeMinutes"></div></div></div>
   
   <div class="pin-box" id="pinBox">
-    <h3>PIN för <span id="pinNameDisplay"></span></h3>
+    <h3 style="margin-bottom:15px;">PIN för <span id="pinNameDisplay"></span></h3>
     <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="4">
-    <div class="pin-buttons"><button class="pin-btn" onclick="closePin()">Avbryt</button><button class="pin-btn" style="font-weight:bold;" onclick="verifyPin()">Klar</button></div>
+    <div class="pin-buttons"><button class="pin-btn" onclick="closePin()">Avbryt</button><button class="pin-btn" style="font-weight:bold;border-left:0.5px solid var(--ios-separator);" onclick="verifyPin()">Klar</button></div>
   </div>
 
   <iframe name="tank_iframe" id="tank_iframe" style="display:none;"></iframe>
@@ -210,11 +255,18 @@
 
     window.onload = () => { 
       document.getElementById('spontantDate').valueAsDate = new Date();
-      setupWheels(); loadData(); window.addEventListener('online', updateNetworkStatus); window.addEventListener('offline', updateNetworkStatus);
+      setupWheels(); loadData(); loadDashboard();
+      window.addEventListener('online', updateNetworkStatus); 
+      window.addEventListener('offline', updateNetworkStatus);
     };
 
     function updateNetworkStatus() { document.getElementById('liveDot').className = navigator.onLine ? "status-dot" : "status-dot offline"; document.getElementById('liveText').textContent = navigator.onLine ? "Ansluten" : "Offline"; }
-    function switchView(v) { ['report','notes'].forEach(id => { document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn').classList.remove('active'); document.getElementById('view'+id.charAt(0).toUpperCase()+id.slice(1)).style.display='none'; }); document.getElementById('tab'+v.charAt(0).toUpperCase()+v.slice(1)+'Btn').classList.add('active'); document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).style.display='block'; if(v==='notes') renderNotes(); }
+    
+    function switchView(v) { 
+      ['report','notes'].forEach(id => { document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn').classList.remove('active'); document.getElementById('view'+id.charAt(0).toUpperCase()+id.slice(1)).style.display='none'; }); 
+      document.getElementById('tab'+v.charAt(0).toUpperCase()+v.slice(1)+'Btn').classList.add('active'); document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).style.display='block'; 
+      if(v==='notes') renderNotes(); 
+    }
 
     function setJobType(type) {
       jobMode = type;
@@ -232,10 +284,10 @@
 
     function handleLocationChange() { document.getElementById('customLocationRow').style.display = (document.getElementById('locationSelect').value === "NEW") ? 'flex' : 'none'; }
 
-    // BILDKOMPRIMERING (Magi i webbläsaren)
+    // BILD-KOMPRIMERING FÖR ÄTA
     function compressAndSaveImage(e) {
       let file = e.target.files[0]; if(!file) return;
-      document.getElementById('photoStatus').textContent = "Komprimerar...";
+      document.getElementById('photoStatus').textContent = "Laddar bild...";
       let reader = new FileReader();
       reader.onload = function(ev) {
         let img = new Image();
@@ -246,7 +298,7 @@
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.6).split(',')[1];
-          document.getElementById('photoStatus').textContent = "Bild bifogad ✓";
+          document.getElementById('photoStatus').textContent = "Fotobevis sparat ✓";
           document.getElementById('photoStatus').style.color = "var(--ios-green)";
         }
         img.src = ev.target.result;
@@ -258,18 +310,29 @@
       if(navigator.onLine) {
         fetch(API_URL+"?action=getData").then(r=>r.json()).then(d=>{
           staffData=d.staff||[]; calendarEvents=d.events||[]; unreportedData=d.unreported||[]; locationData=d.locations||["Blacksta"];
-          buildUserWheel(); populateEvents(); updateBadge(); populateLocations();
-        });
+          buildUserWheel(); populateEvents(); updateBadge(); populateLocations(); renderNotes();
+        }).catch(e=>console.log("Fetch err:",e));
+      }
+    }
+
+    function loadDashboard() {
+      document.getElementById('dashLoading').style.display = 'block'; document.getElementById('dashContent').style.display = 'none';
+      if(navigator.onLine) {
+        fetch(API_URL+"?action=getDashboardData").then(r=>r.json()).then(d=>{
+          renderDashContent(d.allReports||[]);
+          document.getElementById('dashLoading').style.display = 'none'; document.getElementById('dashContent').style.display = 'block';
+        }).catch(e=>console.log("Dash err:",e));
       }
     }
 
     function populateLocations() {
-      let sel = document.getElementById('locationSelect');
+      let sel = document.getElementById('locationSelect'); let current = sel.value;
       sel.innerHTML = locationData.map(l => `<option value="${l}">${l}</option>`).join('');
       sel.innerHTML += `<option value="NEW">+ Skriv in ny plats...</option>`;
+      if(locationData.includes(current)) sel.value = current; else sel.value = "Blacksta";
     }
 
-    /* === RESTERANDE HJUL & DATUM LOGIK ÄR SAMMA SOM FÖRUT === */
+    // TIDS- OCH ANVÄNDARHJUL
     function buildUserWheel() { let c = document.getElementById('userColumn'); c.innerHTML = staffData.map(u=>`<div class="picker-item">${u.name}</div>`).join(''); c.addEventListener('scroll', ()=>{ setTimeout(()=>{userIndexState=Math.max(0,Math.round(c.scrollTop/40))}, 60)}); }
     function setupWheels() { buildTimeWheel('timeHours', Array.from({length:24},(_,i)=>i), false); buildTimeWheel('timeMinutes', MINUTE_STEPS, true); calcDur(); }
     function buildTimeWheel(id, vals, isMin) { let c = document.getElementById(id); c.innerHTML = vals.map(v=>`<div class="picker-item">${String(v).padStart(2,'0')}</div>`).join(''); c.addEventListener('scroll', ()=>{ setTimeout(()=>{let idx=Math.max(0,Math.round(c.scrollTop/40)); if(!isMin)tempTime.h=idx; else tempTime.m=MINUTE_STEPS[Math.min(3,idx)]}, 60)}); }
@@ -278,90 +341,114 @@
     function confirmUser() { candidateUserObj=staffData[userIndexState]; closeAllPickers(); openPin(); }
     function openPin() { document.getElementById('pinNameDisplay').textContent=candidateUserObj.name; document.getElementById('pinInput').value=''; document.getElementById('overlay').classList.add('show'); document.getElementById('pinBox').style.display='block'; setTimeout(()=>document.getElementById('pinInput').focus(),100); }
     function closePin() { document.getElementById('overlay').classList.remove('show'); document.getElementById('pinBox').style.display='none'; }
-    function verifyPin() { if(document.getElementById('pinInput').value === (candidateUserObj.pin||"0000")) { selectedUserObj=candidateUserObj; document.getElementById('userValDisplay').textContent=selectedUserObj.name; closePin(); updateBadge(); } else alert("Fel PIN"); }
+    function verifyPin() { if(document.getElementById('pinInput').value === (candidateUserObj.pin||"0000")) { selectedUserObj=candidateUserObj; document.getElementById('userValDisplay').textContent=selectedUserObj.name; closePin(); updateBadge(); renderNotes(); } else { alert("Fel PIN-kod"); document.getElementById('pinInput').value=''; } }
     function closeAllPickers() { ['userPickerSheet','timePickerSheet'].forEach(id=>document.getElementById(id).classList.remove('open')); document.getElementById('overlay').classList.remove('show'); }
-    function openTimePicker(t) { activeTimeType=t; document.getElementById('overlay').classList.add('show'); document.getElementById('timePickerSheet').classList.add('open'); }
+    function openTimePicker(t) { activeTimeType=t; document.getElementById('timePickerTitle').innerText = t==='start'?"VÄLJ STARTTID":"VÄLJ SLUTTID"; document.getElementById('overlay').classList.add('show'); document.getElementById('timePickerSheet').classList.add('open'); }
     function confirmTimePicker() { if(activeTimeType==='start'){timeState.startH=tempTime.h; timeState.startM=tempTime.m;}else{timeState.endH=tempTime.h; timeState.endM=tempTime.m;} document.getElementById('startBadge').textContent=`${pad(timeState.startH)}:${pad(timeState.startM)}`; document.getElementById('endBadge').textContent=`${pad(timeState.endH)}:${pad(timeState.endM)}`; calcDur(); closeAllPickers(); }
     function calcDur() { let d = (timeState.endH*60+timeState.endM)-(timeState.startH*60+timeState.startM); if(d<0)d+=1440; document.getElementById('totalDurationText').textContent = `${Math.floor(d/60)} tim ${d%60} min`; return document.getElementById('totalDurationText').textContent; }
     
-    function populateEvents() { let s = document.getElementById('eventSelect'); s.innerHTML='<option value="">-- Välj --</option>'; calendarEvents.forEach((e,i)=> s.innerHTML+=`<option value="${i}">${e.title}</option>`); }
-    function handleEventChange() { let i=document.getElementById('eventSelect').value, d=document.getElementById('dateSelect'); d.innerHTML=''; if(!i)return; selectedEvent=calendarEvents[i]; let c=new Date(selectedEvent.start); d.innerHTML+=`<option value="${c.toISOString().split('T')[0]}">${c.toISOString().split('T')[0]}</option>`; }
-    function updatePassOptions() {}
+    function populateEvents() { let s = document.getElementById('eventSelect'); s.innerHTML='<option value="">-- Välj händelse --</option>'; calendarEvents.forEach((e,i)=> s.innerHTML+=`<option value="${i}">${new Date(e.start).toLocaleDateString('sv-SE',{month:'short',day:'numeric'})}: ${e.title}</option>`); }
+    function handleEventChange() { let i=document.getElementById('eventSelect').value, d=document.getElementById('dateSelect'); d.innerHTML=''; if(!i){d.innerHTML='<option>Välj händelse</option>'; selectedEvent=null; return;} selectedEvent=calendarEvents[i]; let c=new Date(selectedEvent.start); d.innerHTML+=`<option value="${c.toISOString().split('T')[0]}">${c.toLocaleDateString('sv-SE',{weekday:'short',day:'numeric',month:'short'})}</option>`; }
+
+    // ANTECKNINGS-FLIKEN OCH DASHBOARD-LOGIK
+    function parseMins(str) { if(!str)return 0; let s=String(str).toLowerCase(), h=0, m=0; let hm=s.match(/(\d+)\s*(tim|h)/); if(hm)h=parseInt(hm[1]); let mm=s.match(/(\d+)\s*(min|m)/); if(mm)m=parseInt(mm[1]); if(!hm&&!mm){let n=parseFloat(s.replace(',','.')); if(!isNaN(n))return Math.round(n*60);} return h*60+m; }
+    function fmtHrs(m) { let h=m/60; return (Number.isInteger(h)?h:h.toFixed(1).replace('.',','))+" tim"; }
 
     function updateBadge() { let my = unreportedData.filter(i=>i.anvandare===selectedUserObj?.name); let b = document.getElementById('unreportedBadge'); if(my.length){b.textContent=my.length;b.style.display='inline-block';}else b.style.display='none'; }
+    
     function renderNotes() { 
-      let l = document.getElementById('noteBulletList');
-      if(!selectedUserObj) { l.innerHTML = "Välj ditt namn i flik 1 först."; return; }
+      let l = document.getElementById('noteBulletList'), s = document.getElementById('noteSumText');
+      if(!selectedUserObj) { l.innerHTML = "<div style='color:var(--ios-secondary-label);text-align:center;padding:20px;'>Välj ditt namn under 'Rapportera' först.</div>"; s.textContent="0 tim"; return; }
       let my = unreportedData.filter(i=>i.anvandare===selectedUserObj.name);
-      if(!my.length) { l.innerHTML = "Allt är inskickat och klart!"; document.getElementById('noteSumText').textContent="0 tim"; return; }
-      l.innerHTML = my.map(i=>`<li style="margin-bottom:8px;"><b>${i.datum}</b>: ${i.aktivitet} (${i.totaltid})</li>`).join('');
+      if(!my.length) { l.innerHTML = "<div style='color:var(--ios-green);text-align:center;padding:20px;'>Grymt jobbat, du har inget orapporterat!</div>"; s.textContent="0 tim"; return; }
+      
+      let tot=0;
+      l.innerHTML = my.map(i=>{
+        let mins = parseMins(i.totaltid); tot+=mins;
+        let isAta = i.aktivitet.includes("[ÄTA]");
+        return `<li style="margin-bottom:12px; padding-bottom:8px; border-bottom:0.5px solid rgba(255,255,255,0.05);">
+          <div style="display:flex; justify-content:space-between;">
+            <b style="color:${isAta?'var(--ios-purple)':'#FFF'};">${i.datum}</b>
+            <span style="font-weight:600;">${fmtHrs(mins)}</span>
+          </div>
+          <div style="font-size:15px; color:var(--ios-secondary-label); margin-top:2px;">${i.aktivitet} (${i.ort})</div>
+        </li>`;
+      }).join('');
+      s.textContent = fmtHrs(tot);
     }
 
+    function renderDashContent(reports) {
+      let t=0, d=0, p=0, a=0, pObj={};
+      reports.forEach(r=>{
+        let m=parseMins(r.totaltid), isD=(String(r.status).toLowerCase()==="ja"), isA=String(r.aktivitet).includes("[ÄTA]");
+        t+=m; if(isD)d+=m; else p+=m; if(isA)a+=m;
+        let n=r.anvandare||"Okänd"; if(!pObj[n])pObj[n]={t:0,d:0,p:0,a:0};
+        pObj[n].t+=m; if(isD)pObj[n].d+=m; else pObj[n].p+=m; if(isA)pObj[n].a+=m;
+      });
+      document.getElementById('dashTot').innerText=fmtHrs(t); document.getElementById('dashDone').innerText=fmtHrs(d); document.getElementById('dashPend').innerText=fmtHrs(p); document.getElementById('dashAta').innerText=fmtHrs(a);
+      let html="", keys=Object.keys(pObj).sort((x,y)=>pObj[y].t-pObj[x].t);
+      if(!keys.length) html=`<div style="padding:16px;color:var(--ios-secondary-label);">Ingen data...</div>`;
+      else keys.forEach(k=>{ let o=pObj[k]; html+=`<div class="person-row"><div style="font-weight:600;">${k}</div><div class="person-stats"><div class="stat-box"><span class="stat-label">Klart</span><span class="stat-val" style="color:var(--ios-green);">${fmtHrs(o.d)}</span></div><div class="stat-box"><span class="stat-label">Väntar</span><span class="stat-val" style="color:var(--ios-red);">${fmtHrs(o.p)}</span></div><div class="stat-box"><span class="stat-label">ÄTA</span><span class="stat-val" style="color:var(--ios-purple);">${fmtHrs(o.a)}</span></div><div class="stat-box"><span class="stat-label">Totalt</span><span class="stat-val">${fmtHrs(o.t)}</span></div></div></div>`; });
+      document.getElementById('dashPersonList').innerHTML=html;
+    }
+
+    // SPARA OCH SKICKA
+    function showStatus(msg) { let b=document.getElementById('statusBox'); b.textContent=msg; b.style.display='block'; b.style.background='rgba(50,215,75,0.2)'; b.style.color='#32D74B'; setTimeout(()=>{if(b.textContent===msg)b.style.display='none';}, 4000); }
+
     function initiateSubmit() {
-      if(!selectedUserObj) return alert("Välj namn först");
+      if(!selectedUserObj) return alert("Välj ditt namn först.");
       
       let loc = document.getElementById('locationSelect').value;
-      if (loc === "NEW") loc = document.getElementById('customLocationInput').value;
-      if (!loc) loc = "Blacksta";
-
-      let aktivitetStr = "";
-      let datumStr = "";
-
-      if (jobMode === 'kalender') {
-        if(!selectedEvent) return alert("Välj kalenderhändelse");
-        datumStr = document.getElementById('dateSelect').value;
-        aktivitetStr = selectedEvent.title;
-      } else {
-        datumStr = document.getElementById('spontantDate').value;
-        aktivitetStr = document.getElementById('spontantAktivitet').value || "Spontant arbete";
-      }
-
-      aktivitetStr += " (" + document.getElementById('passSelect').value + ")";
+      if (loc === "NEW") { loc = document.getElementById('customLocationInput').value; if(!loc) return alert("Skriv in den nya platsen."); }
       
-      if(document.getElementById('ataToggle').checked) {
-        aktivitetStr = "[ÄTA] " + aktivitetStr;
+      let akt = "", dat = "";
+      if (jobMode === 'kalender') {
+        if(!selectedEvent) return alert("Välj en kalenderhändelse.");
+        dat = document.getElementById('dateSelect').value; akt = selectedEvent.title;
+      } else {
+        dat = document.getElementById('spontantDate').value; akt = document.getElementById('spontantAktivitet').value || "Spontant arbete";
       }
 
-      const payload = {
-        action: 'saveReport',
-        anvandare: selectedUserObj.name,
-        datum: datumStr,
-        aktivitet: aktivitetStr,
-        plats: loc,
-        starttid: `${pad(timeState.startH)}:${pad(timeState.startM)}`,
-        sluttid: `${pad(timeState.endH)}:${pad(timeState.endM)}`,
-        totaltid: calcDur(),
-        anteckning: document.getElementById('noteInput').value,
-        photoBase64: currentPhotoBase64
-      };
+      akt += " (" + document.getElementById('passSelect').value + ")";
+      if(document.getElementById('ataToggle').checked) akt = "[ÄTA] " + akt;
 
-      sendToGoogle(payload);
+      sendToGoogle({
+        action: 'saveReport', anvandare: selectedUserObj.name, datum: dat, aktivitet: akt, plats: loc,
+        starttid: `${pad(timeState.startH)}:${pad(timeState.startM)}`, sluttid: `${pad(timeState.endH)}:${pad(timeState.endM)}`,
+        totaltid: calcDur(), anteckning: document.getElementById('noteInput').value, photoBase64: currentPhotoBase64
+      }, 'Skickar...');
     }
 
     function sendInvoiceMail() {
-      if(!selectedUserObj) return;
-      document.querySelector('.ios-btn.blue').textContent = "Skickar underlag...";
-      sendToGoogle({ action: 'markAsReported', anvandare: selectedUserObj.name });
+      if(!selectedUserObj) return alert("Välj namn i flik 1 först.");
+      let my = unreportedData.filter(i=>i.anvandare===selectedUserObj.name);
+      if(!my.length) return alert("Finns inget att skicka in.");
+      document.getElementById('invoiceBtnText').innerText = "Skickar underlag...";
+      sendToGoogle({ action: 'markAsReported', anvandare: selectedUserObj.name }, 'Fakturerar');
     }
 
-    function sendToGoogle(payload) {
-      document.getElementById('submitBtn').textContent = "Skickar...";
+    function sendToGoogle(payload, loaderType) {
+      if(loaderType==='Fakturerar') {} else { document.getElementById('submitBtn').textContent = "Skickar..."; }
+      
       const form = document.getElementById('tank_form'); form.action = API_URL; form.innerHTML = '';
       for (let key in payload) { let i = document.createElement('input'); i.type = 'hidden'; i.name = key; i.value = payload[key]; form.appendChild(i); }
       
       let done = false;
-      document.getElementById('tank_iframe').onload = () => { if(!done) { done=true; onSuccess(); } };
+      document.getElementById('tank_iframe').onload = () => { if(!done) { done=true; onSuccess(payload.action); } };
       form.submit();
-      setTimeout(()=>{ if(!done){ done=true; onSuccess(); } }, 2500);
+      setTimeout(()=>{ if(!done){ done=true; onSuccess(payload.action); } }, 2500);
 
-      function onSuccess() {
-        alert("Klart! Skickat.");
-        document.getElementById('submitBtn').textContent = "Skicka tidrapport";
-        document.querySelector('.ios-btn.blue').textContent = "Skicka in underlag (Fakturera)";
-        currentPhotoBase64 = ""; document.getElementById('photoStatus').textContent = "Bifoga fotobevis";
-        document.getElementById('noteInput').value = "";
-        document.getElementById('ataToggle').checked = false; handleAtaToggle();
-        loadData();
+      function onSuccess(act) {
+        if(act==='markAsReported') {
+          showStatus("Underlaget har skickats till mailen!");
+          document.getElementById('invoiceBtnText').innerText = "Klart att fakturera (Skicka underlag)";
+        } else {
+          showStatus("Rapporten har sparats!");
+          document.getElementById('submitBtn').textContent = "Skicka tidrapport";
+          document.getElementById('noteInput').value = "";
+          document.getElementById('ataToggle').checked = false; handleAtaToggle();
+        }
+        setTimeout(() => { loadData(); loadDashboard(); }, 1000);
       }
     }
   </script>
