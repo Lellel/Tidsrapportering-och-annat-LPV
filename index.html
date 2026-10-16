@@ -93,7 +93,7 @@
     textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; }
     textarea::placeholder { color: var(--ios-secondary-label); }
 
-    /* MODAL OVERLAY & ACTION SHEETS */
+    /* ACTION SHEETS & MODALER */
     .action-sheet-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
     .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-top-left-radius: 16px; border-top-right-radius: 16px; z-index: 101; transition: bottom 0.35s cubic-bezier(0.1, 0.8, 0.1, 1); padding-bottom: calc(env(safe-area-inset-bottom) + 24px); box-shadow: 0 -4px 24px rgba(0,0,0,0.5); pointer-events: none; }
@@ -114,7 +114,7 @@
     .picker-item { height: var(--ios-picker-item-h); line-height: var(--ios-picker-item-h); text-align: center; font-size: 23px; font-weight: 600; color: #FFFFFF; scroll-snap-align: center; }
     .picker-separator { font-size: 24px; font-weight: 700; line-height: 190px; z-index: 33; position: relative; padding: 0 4px; color: #FFFFFF; }
 
-    /* APPLE ANTECKNING (FLIK 2) */
+    /* ANTECKNINGAR */
     .note-sheet { background: var(--ios-card); border-radius: 16px; padding: 24px 20px; border: 0.5px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 14px rgba(0,0,0,0.2); min-height: 280px; }
     .note-updated-header { color: var(--ios-accent); font-style: italic; font-size: 14px; margin-bottom: 18px; }
     .note-h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 14px; color: var(--ios-label); }
@@ -130,7 +130,7 @@
     .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 16px; transition: background 0.15s ease; }
     .refresh-btn:active { background: rgba(118, 118, 128, 0.4); }
 
-    /* PIN BOX & STATUS */
+    /* PIN BOX */
     .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(28,28,30,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 16px; z-index: 200; box-shadow: 0 12px 36px rgba(0,0,0,0.5); padding: 22px; text-align: center; color: #FFFFFF; border: 0.5px solid rgba(255,255,255,0.1); }
     .pin-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 14px; }
     .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border: 1px solid var(--ios-separator); border-radius: 10px; margin-bottom: 18px; outline: none; background: #000000; color: #FFFFFF; }
@@ -254,13 +254,12 @@
     <div class="pin-buttons"><button class="pin-btn" onclick="closePin()">Avbryt</button><button class="pin-btn confirm" onclick="verifyPin()">Klar</button></div>
   </div>
 
-  <!-- STRIDSVAGNEN: DOLD FORMULÄRPOST VIA IFRAME -->
+  <!-- STRIDSVAGNSMOTORN: DOLD FORMULÄRPOST VIA IFRAME -->
   <iframe name="tank_iframe" id="tank_iframe" style="display:none; width:0; height:0; border:none;"></iframe>
   <form id="tank_form" method="POST" target="tank_iframe" style="display:none;"></form>
 
   <script>
-    // DEN SAKNADE LÄNKEN ÄR TILLBAKA!
-    const API_URL = "https://script.google.com/macros/s/AKfycbwtRByi_GiSXYu9hxrAbVcueJJxFEHM1c2Gy8FDSftc/dev";
+    const API_URL = "KLISTRA_IN_DIN_APPS_SCRIPT_URL_HÄR";
     
     let staffData = [], calendarEvents = [], unreportedData = [];
     let selectedUserObj = null, selectedEvent = null, pendingPayload = null;
@@ -480,7 +479,6 @@
       } else { alert("Fel PIN-kod. Försök igen."); document.getElementById('pinInput').value = ''; }
     }
 
-    // STRIDSVAGNSMOTORN: Skickar via dolt formulär
     function sendToGoogle(payload) {
       setLoading(true);
       const form = document.getElementById('tank_form');
@@ -507,7 +505,6 @@
 
       form.submit();
 
-      // Backup-timer om Safari inte triggar onload på cross-origin iframe
       setTimeout(() => {
         if (!done) {
           done = true;
