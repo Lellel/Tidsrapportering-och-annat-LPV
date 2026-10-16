@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin Dashboard</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #1C1C1E;
+      --accent: #FF9500;
+      --green: #32D74B;
+      --red: #FF3B30;
+      --text: #FFFFFF;
+      --text-muted: #8E8E93;
+      --border: rgba(255,255,255,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 20px; }
+    
+    .container { max-width: 900px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    
+    .refresh-btn { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .refresh-btn:hover { opacity: 0.8; transform: scale(0.98); }
+    
+    /* Grid för översta korten */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .card { background: var(--card-bg); padding: 24px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .card-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+    .card-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+    .val-accent { color: var(--accent); }
+    .val-green { color: var(--green); }
+    .val-red { color: var(--red); }
+    
+    /* Lista per person */
+    .section-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; }
+    .person-list { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
+    .person-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .person-row:last-child { border-bottom: none; }
+    .person-name { font-size: 18px; font-weight: 600; }
+    .person-stats { display: flex; gap: 20px; text-align: right; }
+    .stat-box { display: flex; flex-direction: column; }
+    .stat-label { font-size: 12px; color: var(--text-muted); }
+    .stat-val { font-size: 16px; font-weight: 600; }
+    
+    #loading { text-align: center; color: var(--accent); font-weight: 600; padding: 40px; font-size: 18px; }
+    
+    @media (max-width: 600px) {
+      .person-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .person-stats { width: 100%; justify-content: space-between; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Översikt - Tidrapporter</h1>
+      <button class="refresh-btn" onclick="fetchData()">↻ Ladda om</button>
+    </header>
+
+    <div id="loading">Hämtar data från kalkylarket...</div>
+
+    <div id="dashboard-content" style="display: none;">
+      
+      <div class="summary-grid">
+        <div class="card">
+          <div class="card-title">Totalt inrapporterat</div>
+          <div class="card-value val-accent" id="totHours">0 tim</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Klart (Bockat via SMS)</div>
+          <div class="card-value val-green" id="doneHours">0 tim</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Väntar på avstämning</div>
+          <div class="card-value val-red" id="pendingHours">0 tim</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Timmar per person</h2>
+      <div class="person-list" id="personList">
+        <!-- Genereras dynamiskt via JS -->
+      </div>
+      
+    </div>
+  </div>
+
+  <script>
+    // Samma länk som i din app!
+    const API_URL = "https://script.google.com/macros/s/AKfycbytaWBk-Zw-ohmKI1pknxOS_A9KjM0-mTMQYkBSTPWsdx21iAPAss7QIatepX9bvXlg_w/exec";
+
+    window.onload = fetchData;
+
+    function fetchData() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('dashboard-content').style.display = 'none';
+
+      fetch(API_URL + "?action=getDashboardData")
+        .then(res => res.json())
+        .then(data => {
+          renderDashboard(data.allReports || []);
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('dashboard-content').style.display = 'block';
+        })
+        .catch(err => {
+          document.getElementById('loading').innerText = "Kunde inte hämta data. Försök igen.";
+          console.error(err);
+        });
+    }
+
+    // Verktyg för att göra om "9 tim 30 min" till minuter
+    function parseToMinutes(str) {
+      if (!str) return 0;
+      let s = String(str).toLowerCase(), h = 0, m = 0;
+      let hMatch = s.match(/(\d+)\s*(tim|h)/); if (hMatch) h = parseInt(hMatch[1], 10);
+      let mMatch = s.match(/(\d+)\s*(min|m)/); if (mMatch) m = parseInt(mMatch[1], 10);
+      if (!hMatch && !mMatch) { let n = parseFloat(s.replace(',', '.')); if (!isNaN(n)) return Math.round(n * 60); }
+      return (h * 60) + m;
+    }
+
+    function formatHours(minutes) {
+      let h = minutes / 60;
+      return (Number.isInteger(h) ? h : h.toFixed(1).replace('.', ',')) + " tim";
+    }
+
+    function renderDashboard(reports) {
+      let totalMins = 0;
+      let doneMins = 0;
+      let pendingMins = 0;
+      let persons = {}; // Objekt för att lagra statistik per person
+
+      reports.forEach(r => {
+        let mins = parseToMinutes(r.totaltid);
+        totalMins += mins;
+        
+        let status = String(r.status).toLowerCase();
+        let isDone = (status === "ja" || status === "true"); // True för checkbox
+        
+        if (isDone) doneMins += mins;
+        else pendingMins += mins;
+
+        let name = r.anvandare || "Okänd";
+        if (!persons[name]) {
+          persons[name] = { total: 0, done: 0, pending: 0 };
+        }
+        
+        persons[name].total += mins;
+        if (isDone) persons[name].done += mins;
+        else persons[name].pending += mins;
+      });
+
+      // Uppdatera topp-korten
+      document.getElementById('totHours').innerText = formatHours(totalMins);
+      document.getElementById('doneHours').innerText = formatHours(doneMins);
+      document.getElementById('pendingHours').innerText = formatHours(pendingMins);
+
+      // Bygg listan över personal
+      let html = "";
+      
+      // Sortera efter vem som jobbat mest
+      let sortedNames = Object.keys(persons).sort((a, b) => persons[b].total - persons[a].total);
+
+      if (sortedNames.length === 0) {
+        html = `<div class="person-row"><span class="person-name" style="color: var(--text-muted);">Ingen data hittades...</span></div>`;
+      } else {
+        sortedNames.forEach(name => {
+          let p = persons[name];
+          html += `
+            <div class="person-row">
+              <div class="person-name">${name}</div>
+              <div class="person-stats">
+                <div class="stat-box">
+                  <span class="stat-label">Klart</span>
+                  <span class="stat-val" style="color: var(--green);">${formatHours(p.done)}</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Väntar</span>
+                  <span class="stat-val" style="color: var(--red);">${formatHours(p.pending)}</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Totalt</span>
+                  <span class="stat-val">${formatHours(p.total)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('personList').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
