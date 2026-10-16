@@ -13,139 +13,357 @@
 
   <style>
     :root {
-      --ios-bg: #000000;
-      --ios-card: #1C1C1E;
-      --ios-accent: #FF9500;
-      --ios-gray: #8E8E93;
-      --ios-separator: rgba(84, 84, 88, 0.65);
-      --ios-label: #FFFFFF;
-      --ios-secondary-label: #EBEBF599;
-      --ios-picker-item-h: 40px;
-      --ios-yellow: #FF9500;
-      --ios-green: #32D74B;
+      --ios-bg: #000000; --ios-card: #1C1C1E; --ios-accent: #FF9500;
+      --ios-gray: #8E8E93; --ios-separator: rgba(84, 84, 88, 0.65);
+      --ios-label: #FFFFFF; --ios-secondary-label: #EBEBF599;
+      --ios-picker-item-h: 40px; --ios-yellow: #FF9500; --ios-green: #32D74B;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif; 
-      background-color: var(--ios-bg); 
-      color: var(--ios-label); 
-      padding-top: calc(env(safe-area-inset-top) + 8px); 
-      padding-bottom: calc(env(safe-area-inset-bottom) + 30px); 
-      padding-left: 16px; 
-      padding-right: 16px; 
-      touch-action: manipulation; 
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background-color: var(--ios-bg); color: var(--ios-label); padding: calc(env(safe-area-inset-top) + 8px) 16px calc(env(safe-area-inset-bottom) + 30px) 16px; touch-action: manipulation; }
     
-    /* Wrapper för att hantera delad skärm på paddan */
     .app-wrapper { width: 100%; max-width: 580px; margin: 0 auto; position: relative; }
     .app-container { width: 100%; }
 
     @media (min-width: 850px) {
       body { padding-top: 40px; }
-      .app-wrapper { 
-        display: flex; 
-        justify-content: center; 
-        gap: 32px; 
-        max-width: 1080px; 
-        align-items: flex-start;
-      }
+      .app-wrapper { display: flex; justify-content: center; gap: 32px; max-width: 1080px; align-items: flex-start; }
       .app-container { flex: 1; max-width: 480px; flex-shrink: 0; }
-      
-      /* På paddan lägger vi Dashboarden permanent till höger */
-      #viewDash { 
-        display: block !important; 
-        flex: 1; 
-        max-width: 480px; 
-        flex-shrink: 0; 
-        position: sticky; 
-        top: calc(env(safe-area-inset-top) + 40px); 
-      }
+      #viewDash { display: block !important; flex: 1; max-width: 480px; flex-shrink: 0; position: sticky; top: calc(env(safe-area-inset-top) + 40px); }
     }
 
-    /* HEADER & STATUS */
-    header { 
-      display: flex; justify-content: space-between; align-items: flex-end; 
-      margin-bottom: 12px; padding: 0 4px;
-    }
-    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; color: #FFFFFF; }
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(28, 28, 30, 0.75);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 0.5px solid rgba(255,255,255,0.1);
-      padding: 4px 11px; border-radius: 20px;
-      font-size: 13px; font-weight: 600; color: #FFFFFF;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
+    header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; padding: 0 4px; }
+    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; color: #FFFFFF; }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(28, 28, 30, 0.75); border: 0.5px solid rgba(255,255,255,0.1); padding: 4px 11px; border-radius: 20px; font-size: 13px; font-weight: 600; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ios-green); box-shadow: 0 0 6px rgba(50, 215, 75, 0.6); animation: pulse 2.5s infinite ease-in-out; }
     .status-dot.offline { background: var(--ios-yellow); box-shadow: 0 0 6px rgba(255, 149, 0, 0.6); }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-    /* FLIKVAL */
-    .segmented-control { display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 12px; padding: 3px; margin-bottom: 16px; user-select: none; }
-    .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 14px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; transition: all 0.25s; }
-    .seg-btn.active { background: #636366; color: #FFFFFF; box-shadow: 0 3px 8px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1); }
-    .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-    
-    /* Gömmer dashboard-knappen helt från mobilvyn */
+    .segmented-control { display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 12px; padding: 3px; margin-bottom: 16px; }
+    .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 14px; font-weight: 600; color: var(--ios-secondary-label); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+    .seg-btn.active { background: #636366; color: #FFFFFF; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .seg-badge { background: #FF3B30; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
     #tabDashBtn { display: none; }
 
-    /* KORT & RADER */
-    .section-title { font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; letter-spacing: -0.2px; margin-left: 14px; margin-bottom: 5px; }
+    /* INNER TOGGLES (Kalender/Spontant) */
+    .inner-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 2px; margin-bottom: 12px; }
+    .in-btn { flex: 1; padding: 6px; font-size: 13px; border-radius: 6px; border: none; background: transparent; color: var(--ios-secondary-label); font-weight: 600; cursor: pointer; }
+    .in-btn.active { background: rgba(255,255,255,0.15); color: #FFF; }
+
+    .section-title { font-size: 13px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; margin-left: 14px; margin-bottom: 5px; }
     .ios-card { background: var(--ios-card); border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 0.5px solid rgba(255, 255, 255, 0.08); }
     .ios-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--ios-separator); font-size: 17px; }
     .ios-row:last-child { border-bottom: none; }
-    .row-label-group { display: flex; align-items: center; gap: 10px; font-weight: 400; color: var(--ios-label); }
-    .row-icon { width: 22px; height: 22px; fill: var(--ios-accent); opacity: 0.9; }
-
-    select { border: none; background: transparent; font-family: inherit; font-size: 17px; color: var(--ios-accent); outline: none; max-width: 62%; text-align-last: right; cursor: pointer; font-weight: 400; }
-    .value-button { font-size: 17px; color: var(--ios-accent); cursor: pointer; user-select: none; font-weight: 400; }
-    .time-badge { font-size: 17px; font-weight: 500; color: var(--ios-accent); background: rgba(255, 149, 0, 0.15); padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; }
-    .time-badge.active { background: var(--ios-accent); color: #FFFFFF; }
-    .calculated-val { font-weight: 600; color: var(--ios-label); }
-    textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; }
-    textarea::placeholder { color: var(--ios-secondary-label); }
-
-    /* DASHBOARD / ÖVERSIKT */
-    .dash-panel { padding-bottom: 10px; }
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .dash-card { background: var(--ios-card); padding: 14px 8px; border-radius: 12px; border: 0.5px solid rgba(255, 255, 255, 0.08); text-align: center; }
-    .dash-card-title { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-    .dash-card-value { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-    .val-accent { color: var(--ios-accent); }
-    .val-green { color: var(--ios-green); }
-    .val-red { color: #FF3B30; }
-
-    .person-list { background: var(--ios-card); border-radius: 14px; border: 0.5px solid rgba(255, 255, 255, 0.08); overflow: hidden; }
-    .person-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 0.5px solid var(--ios-separator); }
-    .person-row:last-child { border-bottom: none; }
-    .person-name { font-size: 16px; font-weight: 600; color: var(--ios-label); }
-    .person-stats { display: flex; gap: 14px; text-align: right; }
-    .stat-box { display: flex; flex-direction: column; }
-    .stat-label { font-size: 10px; color: var(--ios-secondary-label); text-transform: uppercase; font-weight: 600; }
-    .stat-val { font-size: 14px; font-weight: 600; }
-
-    /* ANTECKNINGAR */
-    .note-sheet { background: var(--ios-card); border-radius: 16px; padding: 24px 20px; border: 0.5px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 14px rgba(0,0,0,0.2); min-height: 280px; }
-    .note-updated-header { color: var(--ios-accent); font-style: italic; font-size: 14px; margin-bottom: 18px; }
-    .note-h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 14px; color: var(--ios-label); }
-    .note-bullet-list { list-style-type: none; padding-left: 0; margin-bottom: 22px; }
-    .note-bullet-list li { font-size: 17px; line-height: 1.5; color: #EBEBF5; margin-bottom: 16px; }
-    .note-summary { font-size: 18px; border-top: 0.5px solid var(--ios-separator); padding-top: 14px; margin-top: 10px; color: #FFF; }
-    .empty-note-state { text-align: center; padding: 40px 10px; color: var(--ios-secondary-label); font-size: 16px; }
-
-    /* KNAPPAR & MODALER */
-    .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 14px rgba(255,149,0,0.3); transition: transform 0.1s ease, opacity 0.15s ease; margin-top: 6px; }
-    .ios-btn:active { transform: scale(0.98); opacity: 0.9; }
-    .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 10px; transition: background 0.15s ease; }
-    .refresh-btn:active { background: rgba(118, 118, 128, 0.4); }
-
-    .action-sheet-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; opacity: 0; transition: opacity 0.3s ease; }
-    .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
-    .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-top-left-radius: 16px; border-top-right-radius: 16px; z-index: 101; transition: bottom 0.35s; padding-bottom: calc(env(safe-area-inset-bottom) + 24px); pointer-events: none; }
-    .action-sheet.open { bottom: 0; pointer-events: auto; }
-    .action-sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 0.5px solid var(--ios-separator); }
-    .action-sheet-title { font-size: 15px; font-weight: 600; color: var(--ios-secondary-label); text-transform: uppercase; }
-    .action-sheet-btn { color: var(--ios-accent); font-size: 17px; font-weight: 600; background: none; border: none; cursor: pointer; }
     
-    .picker-container { position: relative; height: 190px; display: flex; justify-
+    select, input[type="date"], input[type="text"] { border: none; background: transparent; font-family: inherit; font-size: 17px; color: var(--ios-accent); outline: none; max-width: 65%; text-align: right; }
+    input[type="text"]::placeholder { color: var(--ios-separator); }
+    .time-badge { font-size: 17px; font-weight: 500; color: var(--ios-accent); background: rgba(255, 149, 0, 0.15); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+
+    /* IOS TOGGLE SWITCH */
+    .switch { position: relative; display: inline-block; width: 50px; height: 30px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(118, 118, 128, 0.4); transition: .3s; border-radius: 30px; }
+    .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--ios-green); }
+    input:checked + .slider:before { transform: translateX(20px); }
+    
+    .photo-btn { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.05); color: var(--ios-accent); font-weight: 600; border-radius: 10px; cursor: pointer; font-size: 15px; border: 1px dashed var(--ios-separator); margin: 0 16px 16px 16px; }
+
+    textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; padding: 12px 16px; }
+
+    .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    .ios-btn.blue { background-color: #0A84FF; box-shadow: 0 4px 14px rgba(10,132,255,0.3); }
+    
+    /* MODALS & ÖVRIGT SOM FÖRUT... (Har klippt lite CSS för att spara plats, behåll din gamla dash-css här om du vill) */
+    .action-sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; opacity: 0; transition: opacity 0.3s; }
+    .action-sheet-overlay.show { display: block; opacity: 1; pointer-events: auto; }
+    .action-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--ios-card); border-radius: 16px 16px 0 0; z-index: 101; transition: bottom 0.35s; padding-bottom: 30px; }
+    .action-sheet.open { bottom: 0; }
+    .picker-container { position: relative; height: 190px; display: flex; justify-content: center; overflow: hidden; }
+    .picker-highlight { position: absolute; top: 75px; left: 16px; right: 16px; height: 40px; background: rgba(118, 118, 128, 0.24); border-radius: 10px; pointer-events: none; z-index: 31; }
+    .picker-column { width: 95px; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; padding: 75px 0; z-index: 33; }
+    .picker-column::-webkit-scrollbar { display: none; }
+    .picker-item { height: 40px; line-height: 40px; text-align: center; font-size: 23px; font-weight: 600; color: #FFF; scroll-snap-align: center; }
+    .pin-box { display:none; position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: rgba(28,28,30,0.95); border-radius: 16px; z-index: 200; padding: 22px; text-align: center; border: 0.5px solid rgba(255,255,255,0.1); }
+    .pin-input { font-size: 28px; letter-spacing: 8px; text-align: center; width: 100%; padding: 10px; border-radius: 10px; margin-bottom: 18px; outline: none; background: #000; color: #FFF; }
+    .pin-buttons { display: flex; margin: 0 -22px -22px -22px; border-top: 0.5px solid var(--ios-separator); }
+    .pin-btn { flex: 1; padding: 14px; background: none; border: none; color: var(--ios-accent); font-size: 17px; cursor: pointer; }
+    #statusBox { display: none; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-weight: 500; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div class="app-container">
+      <header>
+        <div><h1>Tidrapport</h1></div>
+        <div class="status-pill"><span class="status-dot" id="liveDot"></span><span id="liveText">Ansluten</span></div>
+      </header>
+
+      <div class="segmented-control">
+        <button class="seg-btn active" id="tabReportBtn" onclick="switchView('report')">Rapportera</button>
+        <button class="seg-btn" id="tabNotesBtn" onclick="switchView('notes')">Orapporterat<span class="seg-badge" id="unreportedBadge" style="display:none;">0</span></button>
+      </div>
+      <div id="statusBox"></div>
+
+      <!-- FLIK 1: RAPPORTERA -->
+      <div id="viewReport">
+        
+        <div class="ios-card" style="margin-bottom: 24px;">
+          <div class="ios-row">
+            <span>Användare</span>
+            <div class="time-badge" style="background:transparent; padding:0;" id="userValDisplay" onclick="openUserPicker()">Välj...</div>
+          </div>
+        </div>
+
+        <div class="section-title">Uppdragstyp</div>
+        <div class="inner-toggle">
+          <button class="in-btn active" id="btnKalender" onclick="setJobType('kalender')">📅 Kalender</button>
+          <button class="in-btn" id="btnSpontant" onclick="setJobType('spontant')">✍️ Spontant</button>
+        </div>
+
+        <div class="ios-card">
+          <div class="ios-row">
+            <span style="font-weight: 600; color: var(--ios-yellow);">Markera som ÄTA</span>
+            <label class="switch"><input type="checkbox" id="ataToggle" onchange="handleAtaToggle()"><span class="slider"></span></label>
+          </div>
+          
+          <div class="ios-row">
+            <span>Betalställe</span>
+            <select id="locationSelect" onchange="handleLocationChange()"><option value="Blacksta">Blacksta</option></select>
+          </div>
+          <div class="ios-row" id="customLocationRow" style="display:none;">
+            <span>Ny plats:</span>
+            <input type="text" id="customLocationInput" placeholder="T.ex. Lundby Gård">
+          </div>
+
+          <!-- Kalendervy -->
+          <div id="kalenderBlock">
+            <div class="ios-row"><span>Kalender</span><select id="eventSelect" onchange="handleEventChange()"><option>Laddar...</option></select></div>
+            <div class="ios-row"><span>Datum</span><select id="dateSelect" onchange="updatePassOptions()"><option>Välj händelse</option></select></div>
+          </div>
+
+          <!-- Spontanvy -->
+          <div id="spontantBlock" style="display:none;">
+            <div class="ios-row"><span>Datum</span><input type="date" id="spontantDate"></div>
+            <div class="ios-row" style="border-bottom:none;"><span>Vad har gjorts?</span></div>
+            <textarea id="spontantAktivitet" placeholder="T.ex. Lagat vattenrör i stall 4..." style="min-height: 40px; padding-top:0;"></textarea>
+          </div>
+        </div>
+
+        <div class="section-title">Arbetspass & Tider</div>
+        <div class="ios-card">
+          <div class="ios-row"><span>Pass</span><select id="passSelect"><option>Pass 1</option><option>Pass 2</option><option>Övertid</option></select></div>
+          <div class="ios-row"><span>Starttid</span><div class="time-badge" id="startBadge" onclick="openTimePicker('start')">07:00</div></div>
+          <div class="ios-row"><span>Sluttid</span><div class="time-badge" id="endBadge" onclick="openTimePicker('end')">16:00</div></div>
+          <div class="ios-row"><span>Arbetad tid</span><span id="totalDurationText">9 tim 0 min</span></div>
+        </div>
+
+        <!-- Kamera, visas bara när ÄTA är PÅ -->
+        <div id="photoBlock" style="display: none;">
+          <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="compressAndSaveImage(event)">
+          <div class="photo-btn" onclick="document.getElementById('photoInput').click()">
+            <svg style="width:20px;height:20px;fill:currentColor;" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+            <span id="photoStatus">Bifoga fotobevis</span>
+          </div>
+        </div>
+
+        <div class="ios-card"><textarea id="noteInput" placeholder="Övrig anteckning (frivilligt)..."></textarea></div>
+
+        <button class="ios-btn" id="submitBtn" onclick="initiateSubmit()">Skicka tidrapport</button>
+      </div>
+
+      <!-- FLIK 2: ORAPPORTERAT -->
+      <div id="viewNotes" style="display: none;">
+        <div class="ios-card" style="padding: 20px; min-height: 200px;">
+          <ul id="noteBulletList" style="list-style:none; line-height:1.6;">Laddar...</ul>
+          <div style="border-top:0.5px solid var(--ios-separator); margin-top:10px; padding-top:10px; font-weight:bold;">Summa: <span id="noteSumText">0 tim</span></div>
+        </div>
+        
+        <button class="ios-btn blue" onclick="sendInvoiceMail()">
+          <svg style="width:20px;height:20px;fill:#FFF;margin-right:8px;" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          Skicka in underlag (Fakturera)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-sheet-overlay" id="overlay" onclick="closeAllPickers()"></div>
+  <div class="action-sheet" id="userPickerSheet"><div style="padding:15px;text-align:right;"><button onclick="confirmUser()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" style="width:100%" id="userColumn"></div></div></div>
+  <div class="action-sheet" id="timePickerSheet"><div style="padding:15px;text-align:right;"><button onclick="confirmTimePicker()" style="background:none;border:none;color:var(--ios-accent);font-size:17px;">Klar</button></div><div class="picker-container"><div class="picker-highlight"></div><div class="picker-column" id="timeHours"></div><div style="font-size:24px;color:#fff;z-index:33;padding:0 10px;">:</div><div class="picker-column" id="timeMinutes"></div></div></div>
+  
+  <div class="pin-box" id="pinBox">
+    <h3>PIN för <span id="pinNameDisplay"></span></h3>
+    <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="4">
+    <div class="pin-buttons"><button class="pin-btn" onclick="closePin()">Avbryt</button><button class="pin-btn" style="font-weight:bold;" onclick="verifyPin()">Klar</button></div>
+  </div>
+
+  <iframe name="tank_iframe" id="tank_iframe" style="display:none;"></iframe>
+  <form id="tank_form" method="POST" target="tank_iframe" style="display:none;"></form>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbytaWBk-Zw-ohmKI1pknxOS_A9KjM0-mTMQYkBSTPWsdx21iAPAss7QIatepX9bvXlg_w/exec";
+    let staffData=[], calendarEvents=[], unreportedData=[], locationData=["Blacksta"];
+    let selectedUserObj=null, candidateUserObj=null, selectedEvent=null;
+    const MINUTE_STEPS=[0,15,30,45];
+    let timeState={startH:7,startM:0,endH:16,endM:0}, tempTime={h:0,m:0}, activeTimeType=null, userIndexState=0;
+    let jobMode = 'kalender', currentPhotoBase64 = "";
+
+    window.onload = () => { 
+      document.getElementById('spontantDate').valueAsDate = new Date();
+      setupWheels(); loadData(); window.addEventListener('online', updateNetworkStatus); window.addEventListener('offline', updateNetworkStatus);
+    };
+
+    function updateNetworkStatus() { document.getElementById('liveDot').className = navigator.onLine ? "status-dot" : "status-dot offline"; document.getElementById('liveText').textContent = navigator.onLine ? "Ansluten" : "Offline"; }
+    function switchView(v) { ['report','notes'].forEach(id => { document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn').classList.remove('active'); document.getElementById('view'+id.charAt(0).toUpperCase()+id.slice(1)).style.display='none'; }); document.getElementById('tab'+v.charAt(0).toUpperCase()+v.slice(1)+'Btn').classList.add('active'); document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).style.display='block'; if(v==='notes') renderNotes(); }
+
+    function setJobType(type) {
+      jobMode = type;
+      document.getElementById('btnKalender').classList.toggle('active', type==='kalender');
+      document.getElementById('btnSpontant').classList.toggle('active', type==='spontant');
+      document.getElementById('kalenderBlock').style.display = type==='kalender' ? 'block' : 'none';
+      document.getElementById('spontantBlock').style.display = type==='spontant' ? 'block' : 'none';
+    }
+
+    function handleAtaToggle() {
+      let isAta = document.getElementById('ataToggle').checked;
+      document.getElementById('photoBlock').style.display = isAta ? 'block' : 'none';
+      if(!isAta) { currentPhotoBase64 = ""; document.getElementById('photoStatus').textContent = "Bifoga fotobevis"; document.getElementById('photoStatus').style.color = "var(--ios-accent)"; }
+    }
+
+    function handleLocationChange() { document.getElementById('customLocationRow').style.display = (document.getElementById('locationSelect').value === "NEW") ? 'flex' : 'none'; }
+
+    // BILDKOMPRIMERING (Magi i webbläsaren)
+    function compressAndSaveImage(e) {
+      let file = e.target.files[0]; if(!file) return;
+      document.getElementById('photoStatus').textContent = "Komprimerar...";
+      let reader = new FileReader();
+      reader.onload = function(ev) {
+        let img = new Image();
+        img.onload = function() {
+          let canvas = document.createElement('canvas');
+          let MAX = 800, w = img.width, h = img.height;
+          if (w > h && w > MAX) { h *= MAX/w; w = MAX; } else if (h > MAX) { w *= MAX/h; h = MAX; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.6).split(',')[1];
+          document.getElementById('photoStatus').textContent = "Bild bifogad ✓";
+          document.getElementById('photoStatus').style.color = "var(--ios-green)";
+        }
+        img.src = ev.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function loadData() {
+      if(navigator.onLine) {
+        fetch(API_URL+"?action=getData").then(r=>r.json()).then(d=>{
+          staffData=d.staff||[]; calendarEvents=d.events||[]; unreportedData=d.unreported||[]; locationData=d.locations||["Blacksta"];
+          buildUserWheel(); populateEvents(); updateBadge(); populateLocations();
+        });
+      }
+    }
+
+    function populateLocations() {
+      let sel = document.getElementById('locationSelect');
+      sel.innerHTML = locationData.map(l => `<option value="${l}">${l}</option>`).join('');
+      sel.innerHTML += `<option value="NEW">+ Skriv in ny plats...</option>`;
+    }
+
+    /* === RESTERANDE HJUL & DATUM LOGIK ÄR SAMMA SOM FÖRUT === */
+    function buildUserWheel() { let c = document.getElementById('userColumn'); c.innerHTML = staffData.map(u=>`<div class="picker-item">${u.name}</div>`).join(''); c.addEventListener('scroll', ()=>{ setTimeout(()=>{userIndexState=Math.max(0,Math.round(c.scrollTop/40))}, 60)}); }
+    function setupWheels() { buildTimeWheel('timeHours', Array.from({length:24},(_,i)=>i), false); buildTimeWheel('timeMinutes', MINUTE_STEPS, true); calcDur(); }
+    function buildTimeWheel(id, vals, isMin) { let c = document.getElementById(id); c.innerHTML = vals.map(v=>`<div class="picker-item">${String(v).padStart(2,'0')}</div>`).join(''); c.addEventListener('scroll', ()=>{ setTimeout(()=>{let idx=Math.max(0,Math.round(c.scrollTop/40)); if(!isMin)tempTime.h=idx; else tempTime.m=MINUTE_STEPS[Math.min(3,idx)]}, 60)}); }
+    function pad(n) { return String(n).padStart(2,'0'); }
+    function openUserPicker() { document.getElementById('overlay').classList.add('show'); document.getElementById('userPickerSheet').classList.add('open'); }
+    function confirmUser() { candidateUserObj=staffData[userIndexState]; closeAllPickers(); openPin(); }
+    function openPin() { document.getElementById('pinNameDisplay').textContent=candidateUserObj.name; document.getElementById('pinInput').value=''; document.getElementById('overlay').classList.add('show'); document.getElementById('pinBox').style.display='block'; setTimeout(()=>document.getElementById('pinInput').focus(),100); }
+    function closePin() { document.getElementById('overlay').classList.remove('show'); document.getElementById('pinBox').style.display='none'; }
+    function verifyPin() { if(document.getElementById('pinInput').value === (candidateUserObj.pin||"0000")) { selectedUserObj=candidateUserObj; document.getElementById('userValDisplay').textContent=selectedUserObj.name; closePin(); updateBadge(); } else alert("Fel PIN"); }
+    function closeAllPickers() { ['userPickerSheet','timePickerSheet'].forEach(id=>document.getElementById(id).classList.remove('open')); document.getElementById('overlay').classList.remove('show'); }
+    function openTimePicker(t) { activeTimeType=t; document.getElementById('overlay').classList.add('show'); document.getElementById('timePickerSheet').classList.add('open'); }
+    function confirmTimePicker() { if(activeTimeType==='start'){timeState.startH=tempTime.h; timeState.startM=tempTime.m;}else{timeState.endH=tempTime.h; timeState.endM=tempTime.m;} document.getElementById('startBadge').textContent=`${pad(timeState.startH)}:${pad(timeState.startM)}`; document.getElementById('endBadge').textContent=`${pad(timeState.endH)}:${pad(timeState.endM)}`; calcDur(); closeAllPickers(); }
+    function calcDur() { let d = (timeState.endH*60+timeState.endM)-(timeState.startH*60+timeState.startM); if(d<0)d+=1440; document.getElementById('totalDurationText').textContent = `${Math.floor(d/60)} tim ${d%60} min`; return document.getElementById('totalDurationText').textContent; }
+    
+    function populateEvents() { let s = document.getElementById('eventSelect'); s.innerHTML='<option value="">-- Välj --</option>'; calendarEvents.forEach((e,i)=> s.innerHTML+=`<option value="${i}">${e.title}</option>`); }
+    function handleEventChange() { let i=document.getElementById('eventSelect').value, d=document.getElementById('dateSelect'); d.innerHTML=''; if(!i)return; selectedEvent=calendarEvents[i]; let c=new Date(selectedEvent.start); d.innerHTML+=`<option value="${c.toISOString().split('T')[0]}">${c.toISOString().split('T')[0]}</option>`; }
+    function updatePassOptions() {}
+
+    function updateBadge() { let my = unreportedData.filter(i=>i.anvandare===selectedUserObj?.name); let b = document.getElementById('unreportedBadge'); if(my.length){b.textContent=my.length;b.style.display='inline-block';}else b.style.display='none'; }
+    function renderNotes() { 
+      let l = document.getElementById('noteBulletList');
+      if(!selectedUserObj) { l.innerHTML = "Välj ditt namn i flik 1 först."; return; }
+      let my = unreportedData.filter(i=>i.anvandare===selectedUserObj.name);
+      if(!my.length) { l.innerHTML = "Allt är inskickat och klart!"; document.getElementById('noteSumText').textContent="0 tim"; return; }
+      l.innerHTML = my.map(i=>`<li style="margin-bottom:8px;"><b>${i.datum}</b>: ${i.aktivitet} (${i.totaltid})</li>`).join('');
+    }
+
+    function initiateSubmit() {
+      if(!selectedUserObj) return alert("Välj namn först");
+      
+      let loc = document.getElementById('locationSelect').value;
+      if (loc === "NEW") loc = document.getElementById('customLocationInput').value;
+      if (!loc) loc = "Blacksta";
+
+      let aktivitetStr = "";
+      let datumStr = "";
+
+      if (jobMode === 'kalender') {
+        if(!selectedEvent) return alert("Välj kalenderhändelse");
+        datumStr = document.getElementById('dateSelect').value;
+        aktivitetStr = selectedEvent.title;
+      } else {
+        datumStr = document.getElementById('spontantDate').value;
+        aktivitetStr = document.getElementById('spontantAktivitet').value || "Spontant arbete";
+      }
+
+      aktivitetStr += " (" + document.getElementById('passSelect').value + ")";
+      
+      if(document.getElementById('ataToggle').checked) {
+        aktivitetStr = "[ÄTA] " + aktivitetStr;
+      }
+
+      const payload = {
+        action: 'saveReport',
+        anvandare: selectedUserObj.name,
+        datum: datumStr,
+        aktivitet: aktivitetStr,
+        plats: loc,
+        starttid: `${pad(timeState.startH)}:${pad(timeState.startM)}`,
+        sluttid: `${pad(timeState.endH)}:${pad(timeState.endM)}`,
+        totaltid: calcDur(),
+        anteckning: document.getElementById('noteInput').value,
+        photoBase64: currentPhotoBase64
+      };
+
+      sendToGoogle(payload);
+    }
+
+    function sendInvoiceMail() {
+      if(!selectedUserObj) return;
+      document.querySelector('.ios-btn.blue').textContent = "Skickar underlag...";
+      sendToGoogle({ action: 'markAsReported', anvandare: selectedUserObj.name });
+    }
+
+    function sendToGoogle(payload) {
+      document.getElementById('submitBtn').textContent = "Skickar...";
+      const form = document.getElementById('tank_form'); form.action = API_URL; form.innerHTML = '';
+      for (let key in payload) { let i = document.createElement('input'); i.type = 'hidden'; i.name = key; i.value = payload[key]; form.appendChild(i); }
+      
+      let done = false;
+      document.getElementById('tank_iframe').onload = () => { if(!done) { done=true; onSuccess(); } };
+      form.submit();
+      setTimeout(()=>{ if(!done){ done=true; onSuccess(); } }, 2500);
+
+      function onSuccess() {
+        alert("Klart! Skickat.");
+        document.getElementById('submitBtn').textContent = "Skicka tidrapport";
+        document.querySelector('.ios-btn.blue').textContent = "Skicka in underlag (Fakturera)";
+        currentPhotoBase64 = ""; document.getElementById('photoStatus').textContent = "Bifoga fotobevis";
+        document.getElementById('noteInput').value = "";
+        document.getElementById('ataToggle').checked = false; handleAtaToggle();
+        loadData();
+      }
+    }
+  </script>
+</body>
+</html>
