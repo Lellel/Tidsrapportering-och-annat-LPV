@@ -61,7 +61,7 @@
     .status-dot.offline { background: var(--ios-yellow); box-shadow: 0 0 6px rgba(255, 149, 0, 0.6); }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-    /* FLIKVAL (SEGMENTED CONTROL) */
+    /* FLIKVAL */
     .segmented-control {
       display: flex; background: rgba(118, 118, 128, 0.24); border-radius: 12px; padding: 3px; margin-bottom: 16px; user-select: none;
     }
@@ -92,17 +92,6 @@
     .calculated-val { font-weight: 600; color: var(--ios-label); }
     textarea { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 16px; color: var(--ios-label); outline: none; resize: none; min-height: 65px; }
     textarea::placeholder { color: var(--ios-secondary-label); }
-
-    /* SMS-KNAPP I KORTET */
-    .note-action-bar { display: flex; justify-content: flex-end; padding-top: 8px; border-top: 0.5px solid rgba(255,255,255,0.06); }
-    .sms-share-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(118, 118, 128, 0.24); color: var(--ios-accent);
-      border: none; border-radius: 8px; padding: 6px 12px; font-size: 14px; font-weight: 600; cursor: pointer;
-      transition: background 0.15s ease;
-    }
-    .sms-share-btn:active { background: rgba(118, 118, 128, 0.4); }
-    .sms-share-btn svg { width: 15px; height: 15px; fill: currentColor; }
 
     /* ACTION SHEETS & MODALER */
     .action-sheet-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -138,7 +127,7 @@
     .ios-btn { width: 100%; background-color: var(--ios-accent); color: #FFFFFF; font-size: 17px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 14px rgba(255,149,0,0.3); transition: transform 0.1s ease, opacity 0.15s ease; margin-top: 6px; }
     .ios-btn:active { transform: scale(0.98); opacity: 0.9; }
     .ios-btn:disabled { background-color: var(--ios-gray); box-shadow: none; transform: none; }
-    .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 16px; transition: background 0.15s ease; }
+    .refresh-btn { width: 100%; background: rgba(118, 118, 128, 0.24); color: var(--ios-accent); font-size: 16px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; margin-top: 10px; transition: background 0.15s ease; }
     .refresh-btn:active { background: rgba(118, 118, 128, 0.4); }
 
     /* PIN BOX */
@@ -228,12 +217,6 @@
       <div class="ios-card">
         <div style="padding: 12px 16px;">
           <textarea id="noteInput" placeholder="Lägg till en anteckning (frivilligt)..."></textarea>
-          <div class="note-action-bar">
-            <button type="button" class="sms-share-btn" onclick="sendNoteAsSMS()">
-              <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
-              Skicka som SMS
-            </button>
-          </div>
         </div>
       </div>
 
@@ -251,6 +234,11 @@
         <ul class="note-bullet-list" id="noteBulletList"><li>Laddar sammanställning...</li></ul>
         <div class="note-summary"><b>Summa:</b> <span id="noteSumText">0 timmar</span></div>
       </div>
+
+      <button class="ios-btn" style="margin-top: 14px;" onclick="sendSummaryAsSMS()">
+        <svg style="width: 20px; height: 20px; fill: currentColor; margin-right: 8px;" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+        <span>Dela via SMS & Bocka av</span>
+      </button>
       <button class="refresh-btn" onclick="loadData(true)">↻ Uppdatera lista</button>
     </div>
   </div>
@@ -465,7 +453,6 @@
 
     function closeUserPicker() { document.getElementById('overlay').classList.remove('show'); document.getElementById('userPickerSheet').classList.remove('open'); }
     
-    /* VÄLJ PERSON -> ÖPPNA PIN DIREKT */
     function confirmUser() { 
       candidateUserObj = staffData[userIndexState]; 
       closeUserPicker();
@@ -522,7 +509,6 @@
       updatePassOptions();
     }
 
-    /* PASS-FILTRERING: Tar bort redan rapporterade pass för samma dag */
     function updatePassOptions() {
       const passSelect = document.getElementById('passSelect');
       const selectedDate = document.getElementById('dateSelect').value;
@@ -556,23 +542,57 @@
       if (passes.includes(cur)) sel.value = cur;
     }
 
-    /* SKICKA ANTECKNING SOM SMS */
-    function sendNoteAsSMS() {
-      const note = document.getElementById('noteInput').value.trim();
-      if (!note) return showStatus("Skriv en anteckning först.", false);
+    /* DELA VIA SMS & MARKERA SOM KLAR (Ändrar 'Nej' till 'Ja') */
+    function sendSummaryAsSMS() {
+      if (!selectedUserObj) return showStatus("Välj ditt namn först.", false);
+      let myUnreported = unreportedData.filter(item => item.anvandare === selectedUserObj.name);
+      if (myUnreported.length === 0) return showStatus("Inga orapporterade tider att skicka.", false);
 
-      const dateVal = document.getElementById('dateSelect').value || "";
-      const passVal = document.getElementById('passSelect').value || "";
-      const userVal = selectedUserObj ? selectedUserObj.name : "";
+      const sweDays = ['sön', 'mån', 'tis', 'ons', 'tors', 'fre', 'lör'];
+      let totalMinutesAll = 0, groupedByDate = {};
       
-      const header = userVal ? `[${userVal} - ${dateVal} ${passVal}]:\n` : "";
-      const body = encodeURIComponent(header + note);
-      
-      // På iOS Safari används "sms:&body="
-      window.location.href = `sms:&body=${body}`;
+      myUnreported.forEach(item => {
+        let rawDate = String(item.datum).split('T')[0];
+        let d = new Date(rawDate + "T12:00:00");
+        let dateLabel = rawDate;
+        if (!isNaN(d.getTime())) dateLabel = `${sweDays[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`;
+        let mins = parseDurationToMinutes(item.totaltid);
+        totalMinutesAll += mins;
+
+        if (!groupedByDate[dateLabel]) {
+          groupedByDate[dateLabel] = { mins: 0, notes: [] };
+        }
+        groupedByDate[dateLabel].mins += mins;
+        if (item.anteckning && item.anteckning.trim() !== '') {
+          groupedByDate[dateLabel].notes.push(item.anteckning.trim());
+        }
+      });
+
+      let text = `Tidrapport: ${selectedUserObj.name}\n\nOrapporterade tider:\n`;
+      for (const [dateLabel, dayData] of Object.entries(groupedByDate)) {
+        let hoursDec = (dayData.mins / 60);
+        let hoursFormatted = Number.isInteger(hoursDec) ? hoursDec : hoursDec.toFixed(1).replace('.', ',');
+        text += `• ${dateLabel}, ${hoursFormatted} tim\n`;
+        dayData.notes.forEach(n => {
+          text += `  "${n}"\n`;
+        });
+      }
+      let totalHoursDec = (totalMinutesAll / 60);
+      let totalFormatted = Number.isInteger(totalHoursDec) ? totalHoursDec : totalHoursDec.toFixed(1).replace('.', ',');
+      text += `\nSumma: ${totalFormatted} timmar`;
+
+      // 1. Öppna SMS-appen
+      window.location.href = `sms:&body=${encodeURIComponent(text)}`;
+
+      // 2. Skicka signal till Google att bocka av dessa tider
+      if (navigator.onLine) {
+        const payload = { action: 'markAsReported', anvandare: selectedUserObj.name };
+        sendToGoogle(payload);
+      } else {
+        showStatus("Du är offline. Bockas av när du har nätverk igen.", false);
+      }
     }
 
-    /* RAPPORTERA DIREKT (PIN redan verifierad vid namnval) */
     function initiateSubmit() {
       if (!selectedUserObj) return showStatus("Vänligen välj ditt namn.", false);
       if (!selectedEvent || !document.getElementById('dateSelect').value) return showStatus("Välj ett uppdrag och datum.", false);
@@ -592,7 +612,9 @@
     }
 
     function sendToGoogle(payload) {
-      setLoading(true);
+      let isMarking = (payload.action === 'markAsReported');
+      if (!isMarking) setLoading(true);
+
       const form = document.getElementById('tank_form');
       form.action = API_URL;
       form.innerHTML = '';
@@ -611,7 +633,7 @@
       iframe.onload = () => {
         if (!done) {
           done = true;
-          onSuccess();
+          onSuccess(isMarking);
         }
       };
 
@@ -620,14 +642,18 @@
       setTimeout(() => {
         if (!done) {
           done = true;
-          onSuccess();
+          onSuccess(isMarking);
         }
       }, 2500);
 
-      function onSuccess() {
-        setLoading(false);
-        showStatus("Rapporten har sparats!", true);
-        resetForm();
+      function onSuccess(isMark) {
+        if (!isMark) {
+          setLoading(false);
+          showStatus("Rapporten har sparats!", true);
+          resetForm();
+        } else {
+          showStatus("Sammanställningen är nu bockad som klar!", true);
+        }
         setTimeout(loadData, 1000);
       }
     }
