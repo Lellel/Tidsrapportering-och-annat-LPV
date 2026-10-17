@@ -124,6 +124,11 @@ function setType(type) {
     document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === type);
   });
   document.getElementById('passRow').style.display = (type === 'kalender') ? 'flex' : 'none';
+  
+  // Fotoblocket hålls synligt för samtliga uppdragstyper
+  let photoEl = document.getElementById('photoBlock');
+  if (photoEl) photoEl.style.display = 'block';
+
   if (type === 'kalender') {
     document.getElementById('blockKalender').style.display = 'block';
     document.getElementById('blockCustom').style.display = 'none';
@@ -134,19 +139,12 @@ function setType(type) {
     if (type === 'nya') {
       document.getElementById('customTextLabel').textContent = "Vad har gjorts?";
       document.getElementById('customText').placeholder = "T.ex. Tvätt av maskinhall...";
-      document.getElementById('photoBlock').style.display = 'none';
       document.getElementById('noteWrapper').style.display = 'block';
     } else if (type === 'ata') {
       document.getElementById('customTextLabel').textContent = "Beskrivning av ÄTA";
       document.getElementById('customText').placeholder = "Vad gjordes? T.ex. Lagat ventil i stall 4...";
-      document.getElementById('photoBlock').style.display = 'block';
       document.getElementById('noteWrapper').style.display = 'none';
     }
-  }
-  if (type !== 'ata') {
-    currentPhotoBase64 = "";
-    document.getElementById('photoStatus').textContent = "Bifoga bild-underlag";
-    document.getElementById('photoStatus').style.color = "var(--ios-accent)";
   }
 }
 
@@ -274,6 +272,17 @@ function resetFormAfterSubmit() {
   document.getElementById('customText').value = "";
   document.getElementById('noteCard').style.display = 'none';
   document.getElementById('noteToggleBtn').textContent = "+ Lägg till anteckning";
+
+  // Nollställ vald bild och status
+  currentPhotoBase64 = "";
+  let pStatus = document.getElementById('photoStatus');
+  if (pStatus) {
+    pStatus.textContent = "Bifoga bild-underlag";
+    pStatus.style.color = "var(--ios-accent)";
+  }
+  let fileInput = document.getElementById('photoInput');
+  if (fileInput) fileInput.value = "";
+
   setType('kalender');
 }
 
@@ -299,11 +308,11 @@ function initiateSubmit() {
     }
   }
 
-  // Spara omedelbart i Utkorgen istället för att vänta på nätverket
+  // Spara omedelbart i Utkorgen (bild skickas med oavsett typ)
   saveToOutbox({
     action: 'saveReport', anvandare: selectedUserObj.name, datum: dat, aktivitet: akt, plats: loc,
     starttid: `${pad(timeState.startH)}:${pad(timeState.startM)}`, sluttid: `${pad(timeState.endH)}:${pad(timeState.endM)}`,
-    totaltid: calcDur(), anteckning: note, photoBase64: (currentType === 'ata' ? currentPhotoBase64 : "")
+    totaltid: calcDur(), anteckning: note, photoBase64: currentPhotoBase64
   });
 }
 
