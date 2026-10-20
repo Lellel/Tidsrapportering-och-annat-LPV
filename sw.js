@@ -1,26 +1,41 @@
-const CACHE_NAME = 'tidrapport-cache-v1.1120;
-const urlsToCache = [
+const CACHE_NAME = 'tidrapport-v13';
+const ASSETS = [
   './',
   './index.html',
-  './icon.png',
+  './style.css',
+  './app.js',
+  './config.js',
   './manifest.json'
 ];
 
-// Sparar filerna i telefonen vid första besöket
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
-// Använder sparade filer om nätet är nere
-self.addEventListener('fetch', event => {
-  // Låt API-anropen till Google gå vidare till nätet/kön, cacha dem inte här
-  if (event.request.url.includes('script.google.com')) return;
-  
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
