@@ -4,100 +4,232 @@
   <meta charset="UTF-8">
   <title>Tidrapport</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000" id="theme-color-meta">
+  <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#000000" id="theme-color-meta">
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
 </head>
 <body>
-  <div class="app-container">
-    <!-- HEADER -->
-    <header>
-      <h1>Tidrapport</h1>
-      <div class="header-badges">
-        <button id="theme-toggle" class="theme-btn" aria-label="Växla tema">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="user-pill">Daniel</div>
-        <div class="status-pill"><div class="status-dot"></div>Ansluten</div>
-      </div>
-    </header>
 
-    <!-- UTKORG / DAGENS PASS -->
-    <div id="outbox-section" style="display: none;">
-      <div class="outbox-header-row">
-        <span class="section-title" id="outbox-title" style="margin:0;">Dagens pass</span>
-        <button class="submit-pill-btn" onclick="submitAll()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          Skicka in
-        </button>
-      </div>
-      <div id="outbox-container" class="carousel-container"></div>
-    </div>
+  <!-- HUVUDLAYOUT -->
+  <div class="app-layout-wrapper">
+    <div class="app-container">
+      
+      <!-- HEADER -->
+      <header>
+        <h1>Tidrapport</h1>
+        <div class="header-badges">
+          <button id="theme-toggle" class="theme-btn" aria-label="Växla tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M18 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </button>
+          <div class="user-pill" id="user-display" onclick="handleUserPillClick()">Daniel</div>
+          <div class="status-pill"><div class="status-dot"></div>Ansluten</div>
+        </div>
+      </header>
 
-    <!-- 1. UPPDRAG -->
-    <div class="section-title">Uppdrag</div>
-    <div class="ios-card">
-      <div class="type-control">
-        <button type="button" id="btn-type-new" class="type-btn active" onclick="setJobType('nya')">Nya</button>
-        <button type="button" id="btn-type-ata" class="type-btn" onclick="setJobType('ata')">ÄTA</button>
+      <!-- UTKORG / OSTHYVELN (HORISONTELL KARUSELL) -->
+      <div id="outbox-section">
+        <div class="outbox-header-row">
+          <span class="section-title" id="outbox-title" style="margin: 0;">Dagens pass</span>
+          <button class="submit-pill-btn" id="btnSubmitAll" onclick="submitAll()" style="display: none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Skicka in
+          </button>
+        </div>
+        <div id="outbox-container" class="carousel-container"></div>
       </div>
 
-      <div class="ios-row" id="row-place">
-        <span>Betalställe</span>
-        <input type="text" id="input-place" placeholder="Ange plats >" class="val-text">
-      </div>
-      <div class="chips-container" id="chips-container"></div>
+      <!-- 1. UPPDRAG -->
+      <div class="section-title">Uppdrag</div>
+      <div class="ios-card">
+        <div class="type-control">
+          <button type="button" id="btn-type-new" class="type-btn active" onclick="setJobType('nya')">Nya</button>
+          <button type="button" id="btn-type-ata" class="type-btn" onclick="setJobType('ata')">ÄTA</button>
+        </div>
 
-      <div class="ios-row" id="row-ata-number" style="display: none;">
-        <span>ÄTA-nr / Ref</span>
-        <input type="text" id="input-ata" placeholder="T.ex. ÄTA 04" class="val-text">
-      </div>
+        <div class="ios-row" id="row-place">
+          <span>Betalställe</span>
+          <input type="text" id="input-place" placeholder="T.ex. Blacksta" class="val-text">
+        </div>
+        <!-- SNABBVALSCHIPS -->
+        <div class="chips-container" id="chips-container"></div>
 
-      <div class="ios-row" onclick="handleActivityClick()">
-        <span>Aktivitet</span>
-        <span class="val-text" id="selected-activity">
-          Välj aktivitet <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </span>
-      </div>
-    </div>
+        <!-- ÄTA-FÄLT -->
+        <div class="ios-row" id="row-ata-number" style="display: none;">
+          <span>ÄTA-nr / Ref</span>
+          <input type="text" id="input-ata" placeholder="T.ex. ÄTA 04" class="val-text">
+        </div>
 
-    <!-- 2. TID -->
-    <div class="section-title-row">
-      <span class="section-title">Tid</span>
-      <span id="current-duration-badge" class="duration-pill" style="display: none;">-</span>
-    </div>
-    <div class="ios-card">
-      <div class="ios-row">
-        <span>Datum</span>
-        <input type="date" id="input-date">
-      </div>
-      <div class="ios-row">
-        <span>Start</span>
-        <input type="time" id="input-start" onchange="updateLiveHours()">
-      </div>
-      <div class="ios-row">
-        <span>Slut</span>
-        <input type="time" id="input-end" value="" placeholder="Lämna tom för pågående" onchange="updateLiveHours()">
-      </div>
-    </div>
-
-    <!-- 3. DETALJER -->
-    <div class="section-title">Detaljer (valfritt)</div>
-    <div class="ios-card">
-      <textarea id="input-notes" placeholder="Vad har gjorts?"></textarea>
-      <div class="action-row">
-        <input type="file" id="camera-input" accept="image/*" multiple style="display: none;">
-        <div class="add-photo-btn" onclick="document.getElementById('camera-input').click()">
-          <svg id="photo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          <span id="photo-label">Bifoga bild-underlag</span>
+        <div class="ios-row" onclick="openSheet()" style="cursor: pointer;">
+          <span>Aktivitet</span>
+          <span class="val-text" id="selected-activity">
+            Välj aktivitet
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </span>
         </div>
       </div>
+
+      <!-- 2. TID -->
+      <div class="section-title-row">
+        <span class="section-title">Tid</span>
+        <span id="current-duration-badge" class="duration-pill" style="display: none;">-</span>
+      </div>
+      <div class="ios-card">
+        <div class="ios-row">
+          <span>Datum</span>
+          <input type="date" id="input-date" onchange="fetchPlannedJobs()">
+        </div>
+        <div class="ios-row">
+          <span>Start</span>
+          <input type="time" id="input-start" onchange="updateLiveHours()">
+        </div>
+        <div class="ios-row">
+          <span>Slut</span>
+          <input type="time" id="input-end" placeholder="Lämna tom för pågående" onchange="updateLiveHours()">
+        </div>
+      </div>
+
+      <!-- 3. DETALJER -->
+      <div class="section-title">Detaljer (valfritt)</div>
+      <div class="ios-card">
+        <textarea id="input-notes" placeholder="Vad har gjorts?"></textarea>
+        <div class="action-row">
+          <input type="file" id="camera-input" accept="image/*" multiple style="display: none;">
+          <div class="add-photo-btn" onclick="document.getElementById('camera-input').click()">
+            <svg id="photo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span id="photo-label">Bifoga bild-underlag</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPARA PASS -->
+      <button class="main-btn" onclick="saveToOutbox()">Spara pass lokalt</button>
+
+      <!-- 4. SNABBNAVIGATION / FÄLTSTÖD -->
+      <div class="section-title">Fältstöd (Närmsta)</div>
+      <div class="nav-grid">
+        <a href="https://maps.apple.com/?q=Snabbmat" class="nav-card" target="_blank">
+          <span class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 11h16a1 1 0 0 0 1-1 7 7 0 0 0-14 0 1 1 0 0 0 1 1z"/>
+              <path d="M4 15h16"/>
+              <path d="M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1H4v1z"/>
+            </svg>
+          </span>
+          <span class="nav-label">Snabbmat</span>
+        </a>
+
+        <a href="https://maps.apple.com/?q=Byggvaruhus" class="nav-card" target="_blank">
+          <span class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/>
+              <path d="M17.64 15 22 10.64"/>
+              <path d="m20.91 3.26-6.36 6.36a2.5 2.5 0 0 0 0 3.54l.71.71a2.5 2.5 0 0 0 3.54 0l6.36-6.36a1.5 1.5 0 0 0 0-2.12l-2.13-2.13a1.5 1.5 0 0 0-2.12 0Z"/>
+            </svg>
+          </span>
+          <span class="nav-label">Byggvaruhus</span>
+        </a>
+
+        <a href="https://maps.apple.com/?q=Biltema" class="nav-card" target="_blank">
+          <span class="nav-icon">
+            <svg width="24" height="20" viewBox="0 0 28 20" fill="currentColor">
+              <rect x="5" y="2" width="3" height="3" rx="0.5"/>
+              <rect x="11" y="2" width="3" height="3" rx="0.5"/>
+              <rect x="2" y="5.5" width="3" height="3" rx="0.5"/>
+              <rect x="8" y="5.5" width="3" height="3" rx="0.5"/>
+              <rect x="5" y="9" width="3" height="3" rx="0.5"/>
+              <rect x="11" y="9" width="3" height="3" rx="0.5"/>
+              <rect x="2" y="12.5" width="3" height="3" rx="0.5"/>
+              <rect x="8" y="12.5" width="3" height="3" rx="0.5"/>
+              <rect x="5" y="16" width="3" height="3" rx="0.5"/>
+              <rect x="11" y="16" width="3" height="3" rx="0.5"/>
+              <path fill-rule="evenodd" d="M14 2h7a5 5 0 0 1 4.2 7.7A5.5 5.5 0 0 1 21.5 19H14V2zm4 3.5v3.5h3a1.75 1.75 0 0 0 0-3.5h-3zm0 6.5v4h3.5a2 2 0 0 0 0-4H18z"/>
+            </svg>
+          </span>
+          <span class="nav-label">Biltema</span>
+        </a>
+
+        <a href="https://maps.apple.com/?q=Jula" class="nav-card" target="_blank">
+          <span class="nav-icon">
+            <svg width="26" height="20" viewBox="0 0 32 18" fill="none">
+              <rect x="1" y="1" width="30" height="16" rx="5" stroke="currentColor" stroke-width="1.8"/>
+              <text x="16" y="12.5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif" font-size="9.5" font-weight="900" font-style="italic" fill="currentColor" text-anchor="middle" letter-spacing="0.3px">JULA</text>
+            </svg>
+          </span>
+          <span class="nav-label">Jula</span>
+        </a>
+      </div>
     </div>
 
-    <button class="main-btn" onclick="saveToOutbox()">Spara pass lokalt</button>
+    <!-- ADAPTIV LANDSKAP & IPAD DASHBOARD -->
+    <aside id="landscape-dashboard" class="dashboard-panel">
+      <div class="dashboard-header">
+        <div class="section-title" style="margin: 0;">Översikt & Tider</div>
+        <span id="dash-date-badge" class="duration-pill">Idag</span>
+      </div>
+
+      <div class="dash-stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="dash-total-hours">0.0 h</div>
+          <div class="stat-lbl">Totalt idag</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="dash-pass-count">0 st</div>
+          <div class="stat-lbl">Registrerade pass</div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin: 10px 0 6px 0;">Dagens fördelning</div>
+      <div id="dash-activity-list" class="dash-list">
+        <div class="dash-empty">Inga registrerade pass än idag.</div>
+      </div>
+
+      <!-- ADMIN-SEKTION -->
+      <div id="admin-tools-section" style="display: none; margin-top: 16px;">
+        <div class="section-title" style="color: var(--accent); margin: 0 0 6px 0; display: flex; justify-content: space-between; align-items: center;">
+          <span>Administratör: Behörigheter & Länkar</span>
+          <button onclick="fetchAdminUsers()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.13-5.87L2 9"/></svg>
+          </button>
+        </div>
+        <div class="ios-card" style="padding: 10px 14px; margin-bottom: 0;">
+          
+          <div class="admin-input-row">
+            <span class="admin-label">Mottagare</span>
+            <select id="admin-target-user" class="admin-select" onchange="onAdminUserSelect()">
+              <option value="">Laddar kontakter...</option>
+            </select>
+          </div>
+
+          <div class="admin-input-row">
+            <span class="admin-label">Mobil (valfritt)</span>
+            <input type="tel" id="admin-target-phone" placeholder="070..." class="admin-val-input" oninput="updateAdminTargetLink()">
+          </div>
+
+          <div class="admin-input-row" style="border-bottom: none; padding-bottom: 8px;">
+            <span class="admin-label">Ge Admin-roll</span>
+            <label class="ios-switch">
+              <input type="checkbox" id="admin-target-is-admin" onchange="updateAdminTargetLink()">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="admin-actions-grid" style="margin-top: 6px;">
+            <button type="button" class="btn-action admin-btn" onclick="adminSendSMS()">💬 SMS</button>
+            <button type="button" class="btn-action admin-btn" onclick="adminSendEmail()">✉️ Mail</button>
+            <button type="button" class="btn-action admin-btn" onclick="toggleAdminQR()">🏁 QR</button>
+          </div>
+
+          <div id="admin-qr-container" style="display: none; text-align: center; margin-top: 12px; padding-top: 10px; border-top: 0.5px solid var(--separator);">
+            <div id="admin-qr-caption" style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Skanna för att logga in:</div>
+            <img id="admin-qr-image" src="" alt="Inloggnings-QR" style="width: 140px; height: 140px; border-radius: 10px; border: 2px solid #FFF; background: #FFF; margin: 0 auto; display: block;">
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <!-- ACTION SHEET FÖR AKTIVITETER -->
@@ -107,32 +239,26 @@
         <div class="sheet-title">Välj Aktivitet</div>
         <button class="sheet-close" onclick="closeSheet()">Avbryt</button>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Kyl- & frysflytt')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="19" r="2"/><path d="M5 17L8 4m-2-1h3M7 19h13"/><rect x="9.5" y="4" width="10.5" height="13" rx="1.5"/><path d="M14.5 4v10M13.5 7v4m2.5-4v4M11.5 15.5h6.5"/><path d="M21 2v3m-1.5-1.5h3" stroke-width="1.2"/></svg>
         <span>Kyl- & frysflytt</span>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Snöröjning')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4v4m-2-2h4m-3.5-1.5l3 3m-3 0l3-3"/><path d="M12 16v-6h-4l-2-4h-4v10"/><circle cx="5" cy="16" r="2"/><circle cx="12" cy="16" r="2"/><path d="M16 19l2-8" stroke-width="2"/><path d="M17 17h4"/></svg>
         <span>Snöröjning</span>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Linjemålning')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6l3 5v4"/><rect x="7" y="11" width="6" height="4" rx="1"/><circle cx="8" cy="17" r="2"/><circle cx="15" cy="17" r="1.5"/><path d="M13 13h5M17 13v4M21 20H15M11 20H5" stroke-width="2"/></svg>
         <span>Linjemålning</span>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Fasadmålning')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/><rect x="7" y="6" width="6" height="2.5" rx="1"/><path d="M10 8.5v3"/></svg>
         <span>Fasadmålning</span>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Stalltvätt')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c-1-1-1-3 0-4l3-3 4 4-3 3c-1 1-3 1-4 0z"/><path d="M10 14l5-5M14 8l2 2M17 7l4-4M19 9l3-2M15 5l2-3"/><path d="M21 14l-1 2-2 1 2 1 1 2 1-2 2-1-2-1-1-2z" stroke-width="1"/></svg>
         <span>Stalltvätt</span>
       </div>
-
       <div class="sheet-item" onclick="selectActivity('Bandgrävare')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15" width="13" height="5" rx="2.5"/><circle cx="5.5" cy="17.5" r="1"/><circle cx="9.5" cy="17.5" r="1"/><circle cx="13.5" cy="17.5" r="1"/><path d="M5 15v-5a2 2 0 0 1 2-2h4v7M9 11l4-5 6 4-2 4M17 14h4l1-3-3-2"/></svg>
         <span>Bandgrävare</span>
