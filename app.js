@@ -1,3 +1,6 @@
+cd ~/Desktop/LPV_Backup/Tidrapport---dev
+
+cat << 'EOF' > app.js
 // Registrera Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -9,14 +12,17 @@ if ('serviceWorker' in navigator) {
 
 // Global data & state
 let drafts = loadAllDrafts();
-let plannedJobs = []; // OSTHYVELN: Kalenderbokningar från Google Kalender
+let plannedJobs = []; // Hybrid Osthyvel (Kalender + Kalkylark)
 let currentActivity = "";
 let currentJobType = "nya";
-let currentImagesBase64 = [];
+let attachedPhotoBase64 = null;
+let isSubmitting = false;
 
-// ==========================================
-// 1. URL & ANVÄNDARHANTERING
-// ==========================================
+// Hämta kontaktboken från Sheets
+let adminUserList = [];
+let hasFetchedUsers = false;
+
+// Läs användare och Admin-status från URL / localStorage
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('user')) localStorage.setItem('lpv_user', urlParams.get('user'));
 if (urlParams.has('admin')) {
@@ -28,67 +34,113 @@ const currentUser = urlParams.get('user') || localStorage.getItem('lpv_user') ||
 let isAdmin = (urlParams.get('admin') && (urlParams.get('admin').toLowerCase() === 'true' || urlParams.get('admin') === '1'))
            || localStorage.getItem('lpv_is_admin') === 'true';
 
-let adminUserList = [];
-let hasFetchedUsers = false;
+// Hantera klick på namn-pillret
+let userClickCount = 0;
+let userClickTimer = null;
+function handleUserPillClick() {
+  userClickCount++;
+  clearTimeout(userClickTimer);
+  userClickTimer = setTimeout(() => { userClickCount = 0; }, 1000);
+  if (userClickCount >= 3) {
+    userClickCount = 0;
+    isAdmin = !isAdmin;
+    localStorage.setItem('lpv_is_admin', isAdmin ? 'true' : 'false');
+    updateAdminUI();
+    alert(isAdmin ? "👑 Admin-läge aktiverat!" : "Admin-läge avstängt.");
+  }
+}
 
 // ==========================================
-// 2. INDEXED DB (OFFLINE-VALVET)
+// INDEXED DB & LOCALSTORAGE VALV
 // ==========================================
-const DB_NAME = "LPV_Tidrapport_DB";
-const DB_VERSION = 1;
-const STORE_NAME = "drafts";
 let db;
-
 function initDatabase() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    
+  return new Promise((resolve) => {
+    const request = indexedDB.open("LPV_Tidrapport_DB", 1);
     request.onupgradeneeded = (event) => {
       const database = event.target.result;
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME, { keyPath: "id" });
+      if (!database.objectStoreNames.contains("drafts")) {
+        database.createObjectStore("drafts", { keyPath: "id" });
       }
     };
-    
     request.onsuccess = (event) => {
       db = event.target.result;
       resolve(db);
     };
-    
     request.onerror = (event) => {
       console.error("IndexedDB fel:", event.target.errorCode);
-      reject(event.target.errorCode);
+      resolve(null);
     };
   });
 }
 
-async function loadAllDrafts() {
-  return new Promise((resolve) => {
-    if (!db) return resolve([]);
-    const transaction = db.transaction([STORE_NAME], "readonly");
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.getAll();
-    
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => resolve([]);
-  });
+function loadAllDrafts() {
+  const d1 = localStorage.getItem('tidrapport_drafts');
+  const d2 = localStorage.getItem('lpv_tidrapport_drafts');
+  try {
+    if (d1) return JSON.parse(d1);
+    if (d2) return JSON.parse(d2);
+  } catch (e) {
+    console.error("Kunde inte läsa utkast:", e);
+  }
+  return [];
 }
 
-async function saveDraftsToStorage() {
-  if (!db) return;
-  const transaction = db.transaction([STORE_NAME], "readwrite");
-  const store = transaction.objectStore(STORE_NAME);
-  
-  store.clear();
-  drafts.forEach(draft => store.put(draft));
-  
-  return new Promise((resolve, reject) => {
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = (e) => reject(e);
-  });
+function saveDraftsToStorage() {
+  try {
+    const json = JSON.stringify(drafts);
+    localStorage.setItem('tidrapport_drafts', json);
+    localStorage.setItem('lpv_tidrapport_drafts', json);
+  } catch (e) {
+    console.error("LocalStorage-fel:", e);
+  }
+  if (db) {
+    try {
+      const transaction = db.transaction(["drafts"], "readwrite");
+      const store = transaction.objectStore("drafts");
+      store.clear();
+      drafts.forEach(draft => store.put(draft));
+    } catch (e) {
+      console.error("IndexedDB-fel:", e);
+    }
+  }
 }
 
-// ORIGINAL-VEKTORIKONER FRÅN DOKUMENTATIONEN
+// ==========================================
+// AUTOMATISK SYNK FÖR iOS SAFARI
+// ==========================================
+window.addEventListener('online', () => {
+  submitAll(true);
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && navigator.onLine) {
+    submitAll(true);
+  }
+});
+
+function checkForgottenClockOuts() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  let notified = localStorage.getItem('lpv_notified_drafts') ? JSON.parse(localStorage.getItem('lpv_notified_drafts')) : [];
+  drafts.forEach(draft => {
+    if (!draft.end && draft.start && draft.date) {
+      const [h, m] = draft.start.split(':').map(Number);
+      const draftDate = new Date(draft.date);
+      draftDate.setHours(h, m, 0, 0);
+      const diffHours = (now - draftDate) / (1000 * 60 * 60);
+      if (diffHours >= 12 && !notified.includes(draft.id)) {
+        new Notification('⚠️ Pågående pass', {
+          body: `Passet "${draft.activity}" har varit igång i över 12 timmar. Dags att stämpla ut?`,
+          icon: 'icon.png'
+        });
+        notified.push(draft.id);
+      }
+    }
+  });
+  localStorage.setItem('lpv_notified_drafts', JSON.stringify(notified));
+}
+
+// MASKINIKONER
 function getActivityIcon(name) {
   const n = (name || "").toLowerCase();
   if (n.includes('kyl') || n.includes('frys')) {
@@ -112,16 +164,8 @@ function getActivityIcon(name) {
   return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 }
 
-// Action Sheet & Aktivitetsval
-function openSheet() { 
-  const sheet = document.getElementById('sheetBackdrop');
-  if (sheet) sheet.classList.add('active'); 
-}
-
-function closeSheet() { 
-  const sheet = document.getElementById('sheetBackdrop');
-  if (sheet) sheet.classList.remove('active'); 
-}
+function openSheet() { document.getElementById('sheetBackdrop')?.classList.add('active'); }
+function closeSheet() { document.getElementById('sheetBackdrop')?.classList.remove('active'); }
 
 function selectActivity(name) {
   currentActivity = name;
@@ -131,69 +175,50 @@ function selectActivity(name) {
 
 function setJobType(type) {
   currentJobType = type;
-  document.getElementById('btn-type-new').classList.toggle('active', type === 'nya');
-  document.getElementById('btn-type-ata').classList.toggle('active', type === 'ata');
+  document.getElementById('btn-type-cal')?.classList.toggle('active', type === 'kalender');
+  document.getElementById('btn-type-new')?.classList.toggle('active', type === 'nya');
+  document.getElementById('btn-type-ata')?.classList.toggle('active', type === 'ata');
 
   const ataRow = document.getElementById('row-ata-number');
   if (type === 'ata') {
-    ataRow.style.display = 'flex';
-    document.getElementById('input-ata').focus();
+    if (ataRow) ataRow.style.display = 'flex';
+    document.getElementById('input-ata')?.focus();
   } else {
-    ataRow.style.display = 'none';
+    if (ataRow) ataRow.style.display = 'none';
   }
-}
-
-// CHIPS (SNABBVAL) OCH SKAK-ALERT
-const DEFAULT_PLACES = ["Blacksta", "Coop", "Testplats"];
-function renderQuickChips() {
-  const container = document.getElementById('chips-container');
-  if (!container) return;
-  container.innerHTML = '';
-  const recentPlaces = drafts.map(d => d.place).filter(Boolean);
-  const places = Array.from(new Set([...DEFAULT_PLACES, ...recentPlaces])).slice(0, 5);
-  
-  places.forEach(place => {
-    const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'chip-btn'; btn.innerText = place;
-    btn.onclick = () => {
-      document.getElementById('input-place').value = place;
-      document.getElementById('row-place').classList.remove('shake-alert');
-    };
-    container.appendChild(btn);
-  });
-}
-
-function triggerPlaceAlert() {
-  const row = document.getElementById('row-place');
-  row.classList.remove('shake-alert');
-  void row.offsetWidth;
-  row.classList.add('shake-alert');
-  document.getElementById('input-place').focus();
-  setTimeout(() => row.classList.remove('shake-alert'), 600);
+  if (type === 'kalender') {
+    fetchPlannedJobs();
+  }
 }
 
 // INITIERING
 async function initApp() {
   await initDatabase();
-  drafts = await loadAllDrafts();
+  drafts = loadAllDrafts();
 
   const now = new Date();
   const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
   const dateInput = document.getElementById('input-date');
   if (dateInput) dateInput.value = localDate;
 
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
   const startInput = document.getElementById('input-start');
-  if (startInput) startInput.value = getCurrentTimeStr();
+  if (startInput) startInput.value = `${h}:${m}`;
 
   updateAdminUI();
   window.addEventListener('resize', updateDashboardData);
   window.addEventListener('orientationchange', () => setTimeout(updateDashboardData, 150));
 
   updateLiveHours();
-  renderQuickChips();
   renderOutbox();
   updateDashboardData();
-  fetchPlannedJobs(); // Startar Osthyveln automatiskt vid sidladdning
+  fetchPlannedJobs();
+
+  checkForgottenClockOuts();
+  setInterval(checkForgottenClockOuts, 60 * 60 * 1000);
+
+  if (navigator.onLine) submitAll(true);
 }
 
 if (document.readyState === 'loading') {
@@ -229,67 +254,46 @@ function calculateHours(start, end) {
 }
 
 function updateLiveHours() {
-  const start = document.getElementById('input-start').value;
-  const end = document.getElementById('input-end').value;
+  const start = document.getElementById('input-start')?.value;
+  const end = document.getElementById('input-end')?.value;
   const badge = document.getElementById('current-duration-badge');
-  if (start && end) {
-    const hours = calculateHours(start, end);
-    badge.innerText = `${hours.toFixed(1)} h`;
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
+  if (badge) {
+    if (start && end) {
+      const hours = calculateHours(start, end);
+      badge.innerText = `${hours.toFixed(1)} h`;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
   }
 }
 
-// BILD-UPPLADDNING
-document.getElementById('camera-input')?.addEventListener('change', async function(e) {
-  const files = e.target.files;
-  if (!files || files.length === 0) return;
-  const maxFiles = Math.min(files.length, 5);
-  document.getElementById('photo-label').innerText = "Bearbetar bilder...";
-
-  for (let i = 0; i < maxFiles; i++) {
-    const file = files[i];
-    await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const scaleSize = MAX_WIDTH / img.width;
-          canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
-          canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          currentImagesBase64.push(canvas.toDataURL('image/jpeg', 0.7));
-          resolve();
-        };
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-  document.getElementById('photo-label').innerText = currentImagesBase64.length + " Bilder bifogade";
-  document.querySelector('.add-photo-btn').style.borderColor = "var(--green)";
-  document.querySelector('.add-photo-btn').style.color = "var(--green)";
-});
-
-function resetPhotoInput() {
-  currentImagesBase64 = [];
-  const camInput = document.getElementById('camera-input');
-  if (camInput) camInput.value = "";
-  document.getElementById('photo-label').innerText = "Bifoga bild-underlag";
-  document.querySelector('.add-photo-btn').style.borderColor = "rgba(255, 159, 10, 0.3)";
-  document.querySelector('.add-photo-btn').style.color = "var(--accent)";
+function handlePhotoSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1200;
+      const scaleSize = MAX_WIDTH / img.width;
+      canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+      canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      attachedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('photo-label').innerText = "✓ Bild bifogad";
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
-// ==========================================
-// OSTHYVELN: HÄMTA SCHEMALAGDA KALENDERJOBB
-// ==========================================
+// HYBRID-OSTHYVELN
 async function fetchPlannedJobs() {
   if (!navigator.onLine) return;
-  const chosenDate = document.getElementById('input-date').value;
+  const chosenDate = document.getElementById('input-date')?.value || new Date().toISOString().split('T')[0];
   try {
     const res = await fetch(CONFIG.API_URL, {
       method: 'POST',
@@ -297,8 +301,9 @@ async function fetchPlannedJobs() {
       redirect: 'follow',
       body: JSON.stringify({
         token: CONFIG.API_TOKEN,
-        action: 'getCalendar',
-        date: chosenDate
+        action: 'getJobs',
+        date: chosenDate,
+        user: currentUser
       })
     });
     const data = await res.json();
@@ -307,77 +312,45 @@ async function fetchPlannedJobs() {
       renderOutbox();
     }
   } catch (error) {
-    console.error("Osthyveln: Kunde inte hämta kalender", error);
+    console.error("Kunde inte hämta planerade jobb:", error);
   }
 }
 
-// ==========================================
-// STÄMPLA IN SCHEMALAGT JOBB FRÅN OSTHYVELN
-// ==========================================
 function clockInPlannedJob(jobId) {
-  const job = plannedJobs.find(j => j.id === jobId);
-  if (!job) return;
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+
+  const job = plannedJobs.find(j => String(j.id) === String(jobId) || j.id === jobId);
+  if (!job) {
+    console.error("Kunde inte hitta jobb med ID:", jobId, plannedJobs);
+    return;
+  }
 
   const ongoing = drafts.find(d => !d.end);
   if (ongoing) {
     if (confirm(`Du har redan "${ongoing.activity}" pågående.\n\nVill du stämpla ut det förra passet nu?`)) {
-      ongoing.end = getCurrentTimeStr();
+      const nu = new Date();
+      ongoing.end = String(nu.getHours()).padStart(2, '0') + ':' + String(nu.getMinutes()).padStart(2, '0');
+      ongoing.totalHours = calculateHours(ongoing.start, ongoing.end).toFixed(1);
+    } else {
+      return;
     }
   }
+
+  const now = new Date();
+  const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 
   drafts.push({
     id: Date.now(),
     calendarJobId: job.id,
     type: 'normal',
-    date: document.getElementById('input-date').value,
+    date: document.getElementById('input-date')?.value || new Date().toISOString().split('T')[0],
     user: currentUser,
-    place: job.place,
-    activity: job.title,
+    place: job.place || 'Okänd plats',
+    activity: job.title || 'Planerat jobb',
     notes: job.description || '',
-    start: getCurrentTimeStr(),
-    end: '',
-    images: []
-  });
-
-  saveDraftsToStorage();
-  renderOutbox();
-  renderQuickChips();
-  updateDashboardData();
-}
-
-// ==========================================
-// SPLIT-PASS: SKAPA PASS 2, PASS 3 ETC.
-// ==========================================
-function createSplitPass(sourceId) {
-  const src = drafts.find(d => d.id === sourceId);
-  if (!src) return;
-
-  const ongoing = drafts.find(d => !d.end);
-  if (ongoing && confirm(`Du har redan "${ongoing.activity}" pågående.\n\nVill du stämpla ut det förra passet nu?`)) {
-    ongoing.end = getCurrentTimeStr();
-  }
-
-  let baseName = src.activity;
-  let passNum = 2;
-  const match = src.activity.match(/^(.*?)\s*\(Pass\s*(\d+)\)$/i);
-  if (match) {
-    baseName = match[1];
-    passNum = parseInt(match[2]) + 1;
-  } else {
-    src.activity = `${src.activity} (Pass 1)`;
-  }
-
-  drafts.push({
-    id: Date.now(),
-    calendarJobId: src.calendarJobId || null,
-    type: src.type || 'normal',
-    ataNumber: src.ataNumber || '',
-    date: document.getElementById('input-date').value,
-    user: currentUser,
-    place: src.place,
-    activity: `${baseName} (Pass ${passNum})`,
-    notes: src.notes || '',
-    start: getCurrentTimeStr(),
+    start: timeStr,
     end: '',
     images: []
   });
@@ -388,17 +361,24 @@ function createSplitPass(sourceId) {
 }
 
 function clockOut(id) {
+  const nu = new Date();
+  const timeString = String(nu.getHours()).padStart(2, '0') + ':' + String(nu.getMinutes()).padStart(2, '0');
   const draftIndex = drafts.findIndex(d => d.id === id);
   if (draftIndex !== -1) {
-    drafts[draftIndex].end = getCurrentTimeStr();
-    drafts[draftIndex].totalHours = calculateHours(drafts[draftIndex].start, drafts[draftIndex].end).toFixed(1);
+    drafts[draftIndex].end = timeString;
+    drafts[draftIndex].totalHours = calculateHours(drafts[draftIndex].start, timeString).toFixed(1);
     saveDraftsToStorage();
     renderOutbox();
     updateDashboardData();
+    if (navigator.onLine) submitAll(true);
   }
 }
 
 function saveToOutbox() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+
   const date = document.getElementById('input-date').value;
   const place = document.getElementById('input-place').value.trim();
   const notes = document.getElementById('input-notes').value.trim();
@@ -406,8 +386,10 @@ function saveToOutbox() {
   const end = document.getElementById('input-end').value;
   const ata = document.getElementById('input-ata').value.trim();
 
-  if (!place) { triggerPlaceAlert(); return; }
-  if (!start) { alert("Fyll i starttid!"); return; }
+  if (!place || !start) {
+    alert("Fyll i Betalställe och Starttid!");
+    return;
+  }
 
   const hours = end ? calculateHours(start, end).toFixed(1) : "0.0";
   const draft = {
@@ -422,7 +404,7 @@ function saveToOutbox() {
     start: start,
     end: end,
     totalHours: hours,
-    images: [...currentImagesBase64]
+    images: attachedPhotoBase64 ? [attachedPhotoBase64] : []
   };
 
   drafts.push(draft);
@@ -432,35 +414,39 @@ function saveToOutbox() {
   document.getElementById('input-notes').value = '';
   document.getElementById('input-end').value = '';
   document.getElementById('input-ata').value = '';
-  resetPhotoInput();
+  document.getElementById('photo-label').innerText = "Bifoga bild-underlag";
+  attachedPhotoBase64 = null;
 
-  document.getElementById('input-start').value = getCurrentTimeStr();
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('input-start').value = `${h}:${m}`;
   document.getElementById('selected-activity').innerHTML = `Välj aktivitet <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
   currentActivity = "";
   setJobType('nya');
 
   updateLiveHours();
-  renderQuickChips();
   renderOutbox();
   updateDashboardData();
+
+  if (navigator.onLine && end) {
+    submitAll(true);
+  }
 }
 
 function deleteDraft(id) {
   drafts = drafts.filter(draft => draft.id !== id);
   saveDraftsToStorage();
   renderOutbox();
-  renderQuickChips();
   updateDashboardData();
 }
 
-// ==========================================
-// RENDERA KARUSELLEN (OSTHYVELN + ARBETSPASS)
-// ==========================================
 function renderOutbox() {
   const container = document.getElementById('outbox-container');
-  const section = document.getElementById('outbox-section');
   const title = document.getElementById('outbox-title');
   const submitBtn = document.getElementById('btnSubmitAll');
+
+  if (!container || !title) return;
 
   container.innerHTML = '';
 
@@ -477,39 +463,52 @@ function renderOutbox() {
     return;
   }
 
-  if (submitBtn) submitBtn.style.display = drafts.length > 0 ? 'flex' : 'none';
+  const readyToSend = drafts.filter(d => d.start && d.end);
+  if (submitBtn) submitBtn.style.display = readyToSend.length > 0 ? 'flex' : 'none';
 
   let totalHours = 0;
   drafts.forEach(d => { if (d.start && d.end) totalHours += parseFloat(calculateHours(d.start, d.end)); });
   title.innerText = `Dagens pass (${drafts.length} st • ${totalHours.toFixed(1)} h)`;
 
-  // 1. OSTHYVELN: Rendera kalenderjobb som inte stämplats in än
+  // Rendera Buffert och Planerade jobb
   plannedJobs.forEach(job => {
-    if (drafts.some(d => d.calendarJobId === job.id)) return;
+    if (drafts.some(d => String(d.calendarJobId) === String(job.id))) return;
     const card = document.createElement('div');
     card.className = 'draft-card';
+    
+    const badgeHtml = job.isBuffer
+      ? `<span style="background: rgba(191, 90, 242, 0.15); color: #BF5AF2; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(191, 90, 242, 0.4); margin-right: 8px;">⏱️ VID TILLFÄLLE</span>`
+      : `<span style="background: rgba(10, 132, 255, 0.15); color: #0A84FF; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(10, 132, 255, 0.4); margin-right: 8px;">📅 PLANERAT</span>`;
+
     card.innerHTML = `
       <div class="card-body">
         <div class="card-title">
           <span style="color:var(--blue); margin-right:12px; display:inline-flex;">${getActivityIcon(job.title)}</span>
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</span>
         </div>
-        <div class="card-meta">
-          <span>📅 Planerat</span>
-          <span class="dot">•</span>
-          <span style="color:var(--text);">${job.place}</span>
+        <div class="card-meta" style="margin-top:6px;">
+          ${badgeHtml}
+          <span style="color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${job.place}</span>
           ${job.start ? `<span class="dot">•</span><span>${job.start}</span>` : ''}
         </div>
         ${job.description ? `<div class="card-note">${job.description}</div>` : ''}
       </div>
       <div class="card-actions">
-        <button class="btn-action clock-in" onclick="clockInPlannedJob('${job.id}')">Stämpla in</button>
+        <button class="btn-action clock-in">Stämpla in</button>
       </div>
     `;
+
+    const clockInBtn = card.querySelector('.clock-in');
+    if (clockInBtn) {
+      clockInBtn.addEventListener('click', () => {
+        clockInPlannedJob(job.id);
+      });
+    }
+
     container.appendChild(card);
   });
 
-  // 2. DRAFTS: Rendera aktiva och avslutade arbetspass
+  // Rendera lokala pass
   drafts.forEach(draft => {
     const card = document.createElement('div');
     card.className = 'draft-card';
@@ -518,34 +517,38 @@ function renderOutbox() {
     const timeDisplay = isOngoing ? '<span class="ongoing-pulse">Pågår</span>' : `${draft.start} – ${draft.end}`;
     const hoursDisplay = isOngoing ? '' : `${calculateHours(draft.start, draft.end).toFixed(1)} h`;
     const ataBadge = draft.type === 'ata' ? `<span class="badge-ata">${draft.ataNumber || 'ÄTA'}</span>` : '';
-    const photoIcon = (draft.images && draft.images.length > 0) ? `<span style="color:var(--green); margin-left:auto;">📸 ${draft.images.length}</span>` : '';
+    const photoIcon = (draft.images && draft.images.length > 0) ? `<span style="color:var(--green); margin-left:auto;">📸</span>` : '';
 
     let actionButtons = isOngoing ? `
       <button class="btn-action clock-out" onclick="clockOut(${draft.id})">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
         Stämpla ut nu
       </button>
-      <button class="btn-action delete" onclick="deleteDraft(${draft.id})" style="flex:0 0 50px;">Radera</button>
+      <button class="btn-action delete" onclick="deleteDraft(${draft.id})" style="flex:0 0 50px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+      </button>
     ` : `
-      <button class="btn-action split-pass" onclick="createSplitPass(${draft.id})">Nytt pass</button>
-      <button class="btn-action delete" onclick="deleteDraft(${draft.id})">Radera</button>
+      <button class="btn-action delete" onclick="deleteDraft(${draft.id})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+        Radera
+      </button>
     `;
 
     card.innerHTML = `
       <div class="card-body">
         <div class="card-title">
-          <span style="color:var(--accent); margin-right:12px; display:inline-flex;">${iconSvg}</span>
+          <span style="display:inline-flex; align-items:center; color:var(--accent); margin-right:8px; flex-shrink:0;">${iconSvg}</span>
           ${ataBadge}
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${draft.place}</span>
           <span class="dot">•</span>
           <span style="font-weight:400; color:#A1A1A6; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${draft.activity}</span>
-          ${photoIcon}
         </div>
         <div class="card-meta">
           <span>${draft.date}</span>
           <span class="dot">•</span>
           <span>${timeDisplay}</span>
-          ${hoursDisplay ? `<span class="dot">•</span><span style="color:var(--text); font-weight:500;">${hoursDisplay}</span>` : ''}
+          ${hoursDisplay ? `<span class="dot">•</span><span style="color:#FFF; font-weight:500;">${hoursDisplay}</span>` : ''}
+          ${photoIcon}
         </div>
         ${draft.notes ? `<div class="card-note">${draft.notes}</div>` : ''}
       </div>
@@ -555,40 +558,49 @@ function renderOutbox() {
   });
 }
 
-// BATCH-RAPPORT MED CORS-FIX
-async function submitAll() {
-  if (drafts.length === 0) return;
+async function submitAll(silent = false) {
+  if (isSubmitting) return;
+
+  const readyToSend = drafts.filter(d => d.start && d.end);
+  if (readyToSend.length === 0) return;
+
+  isSubmitting = true;
+
   const btn = document.getElementById('btnSubmitAll');
-  btn.innerHTML = `<svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> Skickar...`;
-  btn.disabled = true;
+  if (btn) {
+    btn.innerHTML = `<svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> Skickar...`;
+    btn.disabled = true;
+  }
 
   try {
     const res = await fetch(CONFIG.API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      redirect: 'follow',
       body: JSON.stringify({
         token: CONFIG.API_TOKEN,
         action: 'batchReports',
-        pass: drafts
+        pass: readyToSend
       })
     });
     const result = await res.json();
     if (result && result.status === 'success') {
-      alert(`Klart! ${result.count || drafts.length} pass har sparats i kalkylarket.`);
-      drafts = [];
+      if (!silent) alert(`Klart! ${result.count || readyToSend.length} pass har sparats.`);
+      const idsToRemove = readyToSend.map(d => d.id);
+      drafts = drafts.filter(d => !idsToRemove.includes(d.id));
       saveDraftsToStorage();
       renderOutbox();
       updateDashboardData();
-    } else {
+    } else if (!silent) {
       alert("Fel vid inskickning: " + (result.message || "Okänt fel"));
     }
   } catch (err) {
-    alert("Kunde inte nå kalkylarket just nu. Passen ligger kvar säkert i telefonen!");
+    if (!silent) alert("Kunde inte nå kalkylarket just nu. Passen synkas när du får nät!");
     console.error(err);
   } finally {
-    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Skicka in`;
-    btn.disabled = false;
+    isSubmitting = false;
+    if (btn) {
+      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Skicka in`;
+      btn.disabled = false;
+    }
   }
 }
 
@@ -616,7 +628,7 @@ function updateDashboardData() {
     row.className = 'dash-row';
     row.innerHTML = `
       <div>
-        <div style="font-weight:600; color:var(--text);">${p.place || 'Uppdrag'}</div>
+        <div style="font-weight:600; color:#FFF;">${p.place || 'Uppdrag'}</div>
         <div style="font-size:11px; color:var(--text-muted);">${p.activity || 'Övrigt'} (${p.start}–${p.end || 'Pågår'})</div>
       </div>
       <div style="font-weight:600; color:var(--accent);">${hours.toFixed(1)} h</div>
@@ -626,7 +638,6 @@ function updateDashboardData() {
   totalHoursEl.innerText = `${totalH.toFixed(1)} h`;
 }
 
-// ADMIN-LOGIK & KONTAKTBOK
 async function fetchAdminUsers() {
   const select = document.getElementById('admin-target-user');
   if (!select) return;
@@ -634,8 +645,6 @@ async function fetchAdminUsers() {
   try {
     const res = await fetch(CONFIG.API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      redirect: 'follow',
       body: JSON.stringify({ token: CONFIG.API_TOKEN, action: 'getUsers' })
     });
     const data = await res.json();
@@ -643,14 +652,14 @@ async function fetchAdminUsers() {
       adminUserList = data.users;
       hasFetchedUsers = true;
       select.innerHTML = '<option value="">Välj person...</option>';
-      adminUserList.forEach(u => { select.innerHTML += `<option value="${u.name}">${u.name}</option>`; });
+      adminUserList.forEach(u => {
+        select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
+      });
     } else {
-      console.error("Backend felmeddelande:", data);
-      select.innerHTML = `<option value="">Fel: ${data.message || 'Okänt backendfel'}</option>`;
+      select.innerHTML = '<option value="">Fel vid hämtning</option>';
     }
   } catch (err) {
-    console.error("Nätverksfel:", err);
-    select.innerHTML = '<option value="">Offline / Nätverksfel</option>';
+    select.innerHTML = '<option value="">Offline</option>';
   }
 }
 
@@ -658,8 +667,8 @@ function onAdminUserSelect() {
   const select = document.getElementById('admin-target-user');
   const phoneInput = document.getElementById('admin-target-phone');
   const adminCheck = document.getElementById('admin-target-is-admin');
+  
   if (!select || !phoneInput || !adminCheck) return;
-
   const selectedUser = adminUserList.find(u => u.name === select.value);
   if (selectedUser) {
     let phoneVal = selectedUser.phone ? String(selectedUser.phone).trim() : '';
@@ -674,14 +683,14 @@ function onAdminUserSelect() {
 }
 
 function getAdminTargetUrl() {
-  const targetUser = document.getElementById('admin-target-user')?.value.trim() || '';
+  const targetUser = document.getElementById('admin-target-user')?.value.trim();
   const targetIsAdmin = document.getElementById('admin-target-is-admin')?.checked;
   const baseUrl = window.location.origin + window.location.pathname;
   const params = new URLSearchParams();
   if (targetUser) params.set('user', targetUser);
   if (targetIsAdmin) params.set('admin', 'true');
-  const qs = params.toString();
-  return qs ? `${baseUrl}?${qs}` : baseUrl;
+  const queryString = params.toString();
+  return queryString ? `${baseUrl}?${queryString}` : baseUrl;
 }
 
 function updateAdminTargetLink() {
@@ -690,9 +699,11 @@ function updateAdminTargetLink() {
   const caption = document.getElementById('admin-qr-caption');
   if (qrBox && qrBox.style.display === 'block' && qrImg) {
     const targetUrl = getAdminTargetUrl();
-    const targetUser = document.getElementById('admin-target-user')?.value.trim() || '';
+    const targetUser = document.getElementById('admin-target-user')?.value.trim();
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(targetUrl)}`;
-    if (caption) caption.innerText = targetUser ? `Skanna för att logga in som ${targetUser}:` : "Skanna för att logga in:";
+    if (caption) {
+      caption.innerText = targetUser ? `Skanna för att logga in som ${targetUser}:` : "Skanna för att logga in:";
+    }
   }
 }
 
@@ -715,11 +726,21 @@ function adminSendEmail() {
 
 function toggleAdminQR() {
   const qrBox = document.getElementById('admin-qr-container');
-  if (!qrBox) return;
+  const qrImg = document.getElementById('admin-qr-image');
+  const caption = document.getElementById('admin-qr-caption');
+  if (!qrBox || !qrImg) return;
   if (qrBox.style.display === 'none' || qrBox.style.display === '') {
-    updateAdminTargetLink();
+    const targetUrl = getAdminTargetUrl();
+    const targetUser = document.getElementById('admin-target-user')?.value.trim();
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(targetUrl)}`;
+    if (caption) caption.innerText = targetUser ? `Skanna för att logga in som ${targetUser}:` : "Skanna för att logga in:";
     qrBox.style.display = 'block';
   } else {
     qrBox.style.display = 'none';
   }
 }
+EOF
+
+git add app.js
+git commit -m "DEV: Säkrad eventlyssnare för instämpling i Hybrid-Osthyveln"
+git push origin main
