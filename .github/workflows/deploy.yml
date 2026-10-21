@@ -1,0 +1,37 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta Dev-koden
+        uses: actions/checkout@v4
+
+      - name: Klona produktionsrepot
+        run: |
+          git clone https://x-access-token:${{ secrets.PROD_DEPLOY_TOKEN }}@github.com/Lellel/Tidsrapportering-och-annat-LPV.git prod_repo
+
+      - name: Kopiera över logik, struktur och design
+        run: |
+          cp app.js prod_repo/
+          cp style.css prod_repo/
+          cp index.html prod_repo/
+          cp sw.js prod_repo/
+          cp sms.html prod_repo/
+
+      - name: Skicka ändringarna till produktion
+        run: |
+          cd prod_repo
+          git config user.name "JAS 39 Deploy Bot"
+          git config user.email "deploy@tidrapport.local"
+          git add app.js style.css index.html sw.js sms.html
+          
+          if git diff --staged --quiet; then
+            echo "Inga ändringar hittades, avbryter."
+          else
+            git commit -m "🚀 Auto-deploy: Uppdaterad app, struktur och design från Dev"
+            git push https://x-access-token:${{ secrets.PROD_DEPLOY_TOKEN }}@github.com/Lellel/Tidsrapportering-och-annat-LPV.git main
+          fi
