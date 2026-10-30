@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tidrapport-prod-20261021095959';
+const CACHE_NAME = 'tidrapport-prod-20261030-fix';
 const ASSETS = [
   './',
   './index.html',

@@ -1,6 +1,3 @@
-cd ~/Desktop/LPV_Backup/Tidrapport---dev
-
-cat << 'EOF' > app.js
 // Registrera Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -739,8 +736,3 @@ function toggleAdminQR() {
     qrBox.style.display = 'none';
   }
 }
-EOF
-
-git add app.js
-git commit -m "DEV: Säkrad eventlyssnare för instämpling i Hybrid-Osthyveln"
-git push origin main
